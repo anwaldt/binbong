@@ -386,7 +386,7 @@ UsedLibrary="C:/Program Files/EAGLE 8.0/lbr/Eagle Libraries Master/ADC-DAC/tlc75
 
 [Win_1]
 Type="Control Panel"
-Loc="114 182 1313 781"
+Loc="-967 0 -10 1007"
 State=2
 Number=0
 
