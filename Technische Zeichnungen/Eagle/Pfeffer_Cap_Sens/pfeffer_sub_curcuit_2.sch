@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
@@ -4216,13 +4216,16 @@ With round pins</description>
 <instance part="R3" gate="G$1" x="63.5" y="63.5"/>
 <instance part="R4" gate="G$1" x="63.5" y="55.88"/>
 <instance part="P+6" gate="VCC" x="50.8" y="43.18" rot="R90"/>
-<instance part="GND" gate="G$1" x="22.86" y="99.06"/>
-<instance part="3V" gate="G$1" x="35.56" y="99.06" rot="MR0"/>
-<instance part="SCL" gate="G$1" x="22.86" y="86.36"/>
-<instance part="SDA" gate="G$1" x="35.56" y="86.36" rot="MR0"/>
-<instance part="P+7" gate="VCC" x="48.26" y="99.06" rot="R270"/>
-<instance part="GND7" gate="1" x="10.16" y="99.06" rot="R270"/>
-<instance part="SUB2MAIN" gate="A" x="27.94" y="40.64" rot="R180"/>
+<instance part="GND" gate="G$1" x="22.86" y="77.47"/>
+<instance part="3V" gate="G$1" x="30.48" y="77.47" rot="MR0"/>
+<instance part="SCL" gate="G$1" x="22.86" y="64.77"/>
+<instance part="SDA" gate="G$1" x="30.48" y="64.77" rot="MR0"/>
+<instance part="P+7" gate="VCC" x="43.18" y="77.47" rot="R270"/>
+<instance part="GND7" gate="1" x="10.16" y="77.47" rot="R270"/>
+<instance part="SUB2MAIN" gate="A" x="27.94" y="40.64" smashed="yes" rot="R180">
+<attribute name="NAME" x="34.29" y="48.895" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="34.29" y="48.26" size="1.778" layer="96" rot="R180"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -4260,7 +4263,7 @@ With round pins</description>
 <segment>
 <pinref part="P+7" gate="VCC" pin="VCC"/>
 <pinref part="3V" gate="G$1" pin="1"/>
-<wire x1="45.72" y1="99.06" x2="38.1" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="77.47" x2="33.02" y2="77.47" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="4_X_FSR_EXCTITATION" gate="A" pin="7"/>
@@ -4356,7 +4359,7 @@ With round pins</description>
 <segment>
 <pinref part="GND7" gate="1" pin="GND"/>
 <pinref part="GND" gate="G$1" pin="1"/>
-<wire x1="12.7" y1="99.06" x2="20.32" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="77.47" x2="20.32" y2="77.47" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -4364,9 +4367,9 @@ With round pins</description>
 <pinref part="ADS1015" gate="A" pin="3"/>
 <wire x1="60.96" y1="33.02" x2="48.26" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="SCL" gate="G$1" pin="1"/>
-<wire x1="20.32" y1="86.36" x2="5.08" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="5.08" y1="86.36" x2="5.08" y2="20.32" width="0.1524" layer="91"/>
-<wire x1="5.08" y1="20.32" x2="48.26" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="20.32" y1="64.77" x2="13.97" y2="64.77" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="64.77" x2="13.97" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="20.32" x2="48.26" y2="20.32" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="20.32" x2="48.26" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="33.02" x2="48.26" y2="40.64" width="0.1524" layer="91"/>
 <junction x="48.26" y="33.02"/>
@@ -4381,11 +4384,11 @@ With round pins</description>
 <wire x1="50.8" y1="30.48" x2="45.72" y2="30.48" width="0.1524" layer="91"/>
 <junction x="50.8" y="30.48"/>
 <pinref part="SDA" gate="G$1" pin="1"/>
-<wire x1="38.1" y1="86.36" x2="45.72" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="86.36" x2="45.72" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="68.58" x2="10.16" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="10.16" y1="68.58" x2="10.16" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="10.16" y1="22.86" x2="50.8" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="64.77" x2="40.64" y2="64.77" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="64.77" x2="40.64" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="58.42" x2="17.78" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="17.78" y1="58.42" x2="17.78" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="17.78" y1="22.86" x2="50.8" y2="22.86" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="22.86" x2="50.8" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="30.48" x2="45.72" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="SUB2MAIN" gate="A" pin="4"/>
