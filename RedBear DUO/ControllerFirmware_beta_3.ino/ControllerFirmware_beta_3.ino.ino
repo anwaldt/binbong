@@ -28,15 +28,15 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /************************************************************************************************************
    libraries
  ************************************************************************************************************/
-#include <cmath>
+//#include <cmath>
 #include "particle_osc.h"               // the particle header includes all OSC relevant headers and cpps
 
 #include <Adafruit_ADS1015.h>           // Analog-Digital-Converter ADS1015 on the I2C bus
 #include <Adafruit_LSM9DS0.h>           // Accelerometer (+ Gyro + Mag +Temp) LSM 9DS0
-#include <Adafruit_Simple_AHRS.h>
-#include <Adafruit_Sensor.h>
+#include <Adafruit_Simple_AHRS.h>       // IMU conversion Library to calculate roll//pitch//heading !!!includes <cmath>!!!
+//#include <Adafruit_Sensor.h>          // additional IMU Library - unused
 
-#include "application.h"      
+//#include "application.h"      
 
 
 /************************************************************************************************************
