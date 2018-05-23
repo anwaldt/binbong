@@ -4304,7 +4304,7 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <part name="R4" library="rcl" deviceset="R-EU_" device="0207/2V" value="10k"/>
 <part name="MAIN2SUB" library="pinhead" deviceset="PINHD-1X4" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R11" library="rcl" deviceset="R-EU_" device="0204/7" value="100k"/>
+<part name="R11" library="rcl" deviceset="R-EU_" device="0204/7" value="24"/>
 <part name="GND10" library="supply1" deviceset="GND" device="" value="GND"/>
 <part name="P+2" library="supply1" deviceset="VCC" device="" value="3.3V"/>
 <part name="U$1" library="myDegsonConnectors" deviceset="DS308-02" device=""/>

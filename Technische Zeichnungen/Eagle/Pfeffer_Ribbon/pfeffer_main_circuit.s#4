@@ -4566,21 +4566,15 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 </net>
 <net name="N$12" class="0">
 <segment>
-<wire x1="66.04" y1="10.16" x2="83.82" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="63.5" y1="10.16" x2="83.82" y2="10.16" width="0.1524" layer="91"/>
 <wire x1="83.82" y1="10.16" x2="83.82" y2="7.62" width="0.1524" layer="91"/>
 <wire x1="83.82" y1="7.62" x2="99.06" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="MC_RIGHT" gate="G$1" pin="12"/>
 </segment>
 </net>
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="113,1,30.7171,25.5312,JP1,,,,,"/>
-<approved hash="113,1,63.2629,25.5312,JP2,,,,,"/>
-<approved hash="113,1,106.917,73.7912,JP3,,,,,"/>
-<approved hash="113,1,-2.77707,30.6112,JP6,,,,,"/>
-<approved hash="113,1,-1.40123,91.6771,JP4,,,,,"/>
-</errors>
 </schematic>
 </drawing>
 </eagle>
