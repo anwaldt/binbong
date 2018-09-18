@@ -4,7 +4,7 @@ testing with 4.7k Ohm, 5.7k Ohm, 7.5k Ohm and 10k Ohm
 */
 
 #if defined(ARDUINO)
-SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_MODE(MANUAL);
 #endif
 
 
@@ -94,6 +94,5 @@ void loop()
   Serial.print(rib_position);
   Serial.print('\n');
 
-  delay(1000);
+  delay(400);
 }
-

@@ -8,6 +8,7 @@
 
   TODOs:
   - Hidden network!?!?!?
+
 */
 
 /*
@@ -28,7 +29,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /************************************************************************************************************
    libraries
  ************************************************************************************************************/
-//#include <cmath>
+#include <cmath>
 #include "particle_osc.h"               // the particle header includes all OSC relevant headers and cpps
 
 #include <Adafruit_ADS1015.h>           // Analog-Digital-Converter ADS1015 on the I2C bus
@@ -42,9 +43,9 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /************************************************************************************************************
    global variables
  ************************************************************************************************************/
-char ssid[] = "pfeffer_host";           // SSID of the network
-char password[] = "pfeffer123";         // network password
-IPAddress hostIpAddress;                // IP Address of the host, obtaind in setup()
+char ssid[] = "PONY_AIR";           // SSID of the network
+char password[] = "15146830";         // network password
+IPAddress hostIpAddress(192,168,1,187);                // IP Address of the host, obtaind in setup()
 
 UDP udpConnection;                      // UDP Instance
 const int LOCALPORT = 8888;              // port of the RedBEar DUO, which can receive the OSC Messages
@@ -61,6 +62,7 @@ Adafruit_Simple_AHRS ahrs(&lsm.getAccel(), &lsm.getMag());
 // range and gain values.
 void configureLSM9DS0(void)
 {
+  
   // 1.) Set the accelerometer range
   lsm.setupAccel(lsm.LSM9DS0_ACCELRANGE_2G);
   //lsm.setupAccel(lsm.LSM9DS0_ACCELRANGE_4G);
@@ -139,7 +141,8 @@ void setup()
     Serial.println("IP Address obtained! \n\n");
   }
 
-  hostIpAddress = WiFi.gatewayIP();
+//  hostIpAddress = '192.168.1.187'; 
+ // hostIpAddress = WiFi.gatewayIP();
   printWiFiInfo();                                      // print WiFi Connection Info
   
 
@@ -410,6 +413,6 @@ void printWiFiInfo()
   Serial.print(":");
   Serial.println(mac[0], HEX);
 
-  Serial.print("HOST IP Address: ");              // print host IP address:
-  Serial.println(WiFi.gatewayIP());
+  Serial.print("Sending to IP Address: ");              // print host IP address:
+  Serial.println(hostIpAddress);
 }
