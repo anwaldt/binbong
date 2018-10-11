@@ -1,5 +1,5 @@
 /*
- * Author: Anton Schmied (26.03.2018)
+ * Author: Henrik von Coler, Anton Schmied
  * 
   This is the WiFi connection setup and comunnication
   between the RedBear Duo and the A Wifi Dongle based
@@ -43,15 +43,15 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /************************************************************************************************************
    global variables
  ************************************************************************************************************/
-char ssid[] = "PONY_AIR";           // SSID of the network
-char password[] = "15146830";         // network password
-IPAddress hostIpAddress(192,168,1,187);                // IP Address of the host, obtaind in setup()
+char ssid[]     = "BinBongNet";           // SSID of the network
+char password[] = "03396025";         // network password
+IPAddress hostIpAddress(192,168,0,100);                // IP Address of the host, obtaind in setup()
 
-UDP udpConnection;                      // UDP Instance
+UDP udpConnection;                       // UDP Instance
 const int LOCALPORT = 8888;              // port of the RedBEar DUO, which can receive the OSC Messages
-const int HOSTPORT = 9999;               // port on the host, which the OSC messages will be sent to
+const int HOSTPORT  = 9999;              // port on the host, which the OSC messages will be sent to
 
-OSCBundle pfefferBndl;                  // OSC bundle for reading the piezos for octave selection
+OSCBundle bndl_1;                  // OSC bundle for reading the piezos for octave selection
 
 Adafruit_ADS1015 ads = Adafruit_ADS1015();    // create an instance for the ADC
 Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0();    // create an instance for the accelerometer
@@ -125,7 +125,7 @@ void setup()
   }
   if (WiFi.ready())
   {
-    Serial.println("Connection to pfeffer_host established! \n\n");
+    Serial.println("Connection to host established! \n\n");
   }
   
   // get IP Address
@@ -197,10 +197,10 @@ void loop()
   
   velocity = map(pressureSum, VELOCITYTHR, 975, 0, 127);
   velocity = constrain(velocity, 0, 127);
-  pfefferBndl.add("/velocity").add(velocity);
+  bndl_1.add("/velocity").add(velocity);
 
-  pfefferBndl.add("/dirX_push").add(dirX_amnt);
-  pfefferBndl.add("/dirY_push").add(dirY_amnt);
+  bndl_1.add("/dirX_push").add(dirX_amnt);
+  bndl_1.add("/dirY_push").add(dirY_amnt);
 
 
   /********************************************** Read Pitch Sensors ****************************************/
@@ -321,14 +321,15 @@ void loop()
   if (fsrPressed > 0)
   {
     pressureSum = pressureSum / fsrPressed;
-    pressureSum = map(pressureSum, 0, 4095-NOTETHR, 0, 127);
-    pressureSum = constrain(pressureSum, 0 ,127);
-    
+    //pressureSum = map(pressureSum, 0, 4095-NOTETHR, 0, 1);
+    //pressureSum = constrain(pressureSum, 0 ,1);
+
+     
     if (noteDiffMillis > 5)
     {
         notePitch = (holdPitch + 12 * currentOctave + 35);
-        Serial.print("notepitch: ");
-        Serial.println(notePitch);
+        //Serial.print("notepitch: ");
+        //Serial.println(notePitch);
     }
     else if (noteDiffMillis < 5)
     {
@@ -342,8 +343,10 @@ void loop()
     holdPitch = 0;
   }
 
-  pfefferBndl.add("/note_pitch").add(notePitch);
-  pfefferBndl.add("/note_pressure").add(pressureSum);
+  float intensity = (float) pressureSum / 900;
+  
+  bndl_1.add("/note_pitch").add(notePitch);
+  bndl_1.add("/note_pressure").add(intensity);
 
 
   /**************************************** Get Tilt Direction Amounts ************************************/
@@ -351,29 +354,29 @@ void loop()
 //
 //  // Use the simple AHRS function to get the current orientation.
 //  ahrs.getOrientation(&orientation);
-//  pfefferBndl.add("/roll").add(orientation.roll);
-//  pfefferBndl.add("/pitch").add(orientation.pitch);
-//  pfefferBndl.add("/heading").add(orientation.heading);
+//  bndl_1.add("/roll").add(orientation.roll);
+//  bndl_1.add("/pitch").add(orientation.pitch);
+//  bndl_1.add("/heading").add(orientation.heading);
 
   lsm.getEvent(&accel, &mag, &gyro, &temp);
   float roll_x = (float)atan2(accel.acceleration.y, accel.acceleration.z);
   float roll_y = (float)atan2(accel.acceleration.z, accel.acceleration.x);
   
-  pfefferBndl.add("/roll_x").add(roll_x * 180 / PI_F);
-  pfefferBndl.add("/roll_y").add(roll_y * 180 / PI_F);
+  bndl_1.add("/roll_x").add(roll_x * 180 / PI_F);
+  bndl_1.add("/roll_y").add(roll_y * 180 / PI_F);
   
-  pfefferBndl.add("/mag_x").add(mag.magnetic.x);
-  pfefferBndl.add("/mag_y").add(mag.magnetic.y);
-  pfefferBndl.add("/mag_z").add(mag.magnetic.z);
+  bndl_1.add("/mag_x").add(mag.magnetic.x);
+  bndl_1.add("/mag_y").add(mag.magnetic.y);
+  bndl_1.add("/mag_z").add(mag.magnetic.z);
 
-  pfefferBndl.add("/accel_x").add(accel.acceleration.x);
-  pfefferBndl.add("/accel_y").add(accel.acceleration.y);
-  pfefferBndl.add("/accel_z").add(accel.acceleration.z);
+  bndl_1.add("/accel_x").add(accel.acceleration.x);
+  bndl_1.add("/accel_y").add(accel.acceleration.y);
+  bndl_1.add("/accel_z").add(accel.acceleration.z);
   /************************************************ Send Bundle *******************************************/
   udpConnection.beginPacket(hostIpAddress, HOSTPORT);
-  pfefferBndl.send(udpConnection);
+  bndl_1.send(udpConnection);
   udpConnection.endPacket();
-  pfefferBndl.empty();
+  bndl_1.empty();
 }
 
 
