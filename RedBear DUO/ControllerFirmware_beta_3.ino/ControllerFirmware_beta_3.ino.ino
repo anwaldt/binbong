@@ -43,9 +43,9 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /************************************************************************************************************
    global variables
  ************************************************************************************************************/
-char ssid[]     = "BinBongNet";           // SSID of the network
+char ssid[]     = "BINBONG_NET";           // SSID of the network
 char password[] = "03396025";         // network password
-IPAddress hostIpAddress(192,168,0,100);                // IP Address of the host, obtaind in setup()
+IPAddress hostIpAddress(10,10,10,100);                // IP Address of the host, obtaind in setup()
 
 UDP udpConnection;                       // UDP Instance
 const int LOCALPORT = 8888;              // port of the RedBEar DUO, which can receive the OSC Messages
@@ -372,6 +372,7 @@ void loop()
   bndl_1.add("/accel_x").add(accel.acceleration.x);
   bndl_1.add("/accel_y").add(accel.acceleration.y);
   bndl_1.add("/accel_z").add(accel.acceleration.z);
+
   /************************************************ Send Bundle *******************************************/
   udpConnection.beginPacket(hostIpAddress, HOSTPORT);
   bndl_1.send(udpConnection);
