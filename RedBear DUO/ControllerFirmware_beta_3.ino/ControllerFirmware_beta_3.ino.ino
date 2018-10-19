@@ -178,9 +178,19 @@ void loop()
   /****************************************** Get Continous Velocity ***************************************/
   /************************************* and Excitation Button Directions **********************************/
   
-  int fsrPressure_pos = ads.readADC_SingleEnded(0);
-  int fsrPressure_neg = ads.readADC_SingleEnded(2);
+  int fsrPressure_0 = ads.readADC_SingleEnded(0);
+  int fsrPressure_1 = ads.readADC_SingleEnded(1);
+
+  int fsrPressure_2 = ads.readADC_SingleEnded(2);  
+  int fsrPressure_3 = ads.readADC_SingleEnded(3);
+
+  bndl_1.add("/pad/1").add(fsrPressure_0);
+  bndl_1.add("/pad/2").add(fsrPressure_1);
+  bndl_1.add("/pad/3").add(fsrPressure_2);
+  bndl_1.add("/pad/4").add(fsrPressure_3);
+
   
+  /*
   dirX_amnt = map(fsrPressure_pos - fsrPressure_neg, -1023, 1023, 0, 127);
   dirX_amnt = constrain(dirX_amnt, 0 ,127);
   
@@ -202,13 +212,21 @@ void loop()
   bndl_1.add("/dirX_push").add(dirX_amnt);
   bndl_1.add("/dirY_push").add(dirY_amnt);
 
-
+ 
+   bndl_1.add("/dirX_push").add(dirX_amnt);
+  
+  */
+  
   /********************************************** Read Pitch Sensors ****************************************/
   int fsrPressed = 0;
   int currentPitch = 0;
   pressureSum = 0;
 
-  fsrPressure_pos = analogRead(A3);
+int  fsrPressure_pos = analogRead(A3);
+
+  bndl_1.add("/valve/1").add(fsrPressure_pos);
+
+  
   if (fsrPressure_pos > NOTETHR)
   {
     currentPitch |= 0x0001;                                   // set first Bit to 1
@@ -217,6 +235,8 @@ void loop()
   }
 
   fsrPressure_pos = analogRead(A2);
+  bndl_1.add("/valve/2").add(fsrPressure_pos);
+
   if (fsrPressure_pos > NOTETHR)
   {
     currentPitch |= 0x0002;                                   // set second Bit to 1
@@ -225,6 +245,7 @@ void loop()
   }
 
   fsrPressure_pos = analogRead(A1);
+  bndl_1.add("/valve/3").add(fsrPressure_pos);
   if (fsrPressure_pos > NOTETHR)
   {
     currentPitch |= 0x0004;                                   // set third Bit to 1
@@ -233,6 +254,8 @@ void loop()
   }
 
   fsrPressure_pos = analogRead(A0);
+  bndl_1.add("/valve/4").add(fsrPressure_pos);
+
   if (fsrPressure_pos > NOTETHR)
   {
     currentPitch |= 0x0008;                                   // set fourth Bit to 1
@@ -246,6 +269,8 @@ void loop()
     noteDiffMillis = 0;
     holdPitch = currentPitch;
   }
+
+  
 
   /********************************************* Read Ribbon Sensor *****************************************/
   
@@ -313,6 +338,10 @@ void loop()
     {
       currentOctave = 3;
     }
+
+     bndl_1.add("/ribbon/position").add(ribb_position);
+     bndl_1.add("/ribbon/pressure").add(ribb_pressure);
+
   } 
 
   /***************************************** Calculate MIDI Pitch Value *************************************/
