@@ -40,12 +40,27 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 //#include "application.h"      
 
 
+
+
+
+
+
 /************************************************************************************************************
    global variables
  ************************************************************************************************************/
+
+
+// this will be the last octet of the IP address
+int deviceID = 0;
+char copy[50];
+String IP;
+
+
+
 char ssid[]     = "BINBONG_NET";           // SSID of the network
 char password[] = "03396025";         // network password
-IPAddress hostIpAddress(10,10,10,100);                // IP Address of the host, obtaind in setup()
+
+IPAddress hostIpAddress(10,10,10,100);                // IP Address of the host
 
 UDP udpConnection;                       // UDP Instance
 const int LOCALPORT = 8888;              // port of the RedBEar DUO, which can receive the OSC Messages
@@ -106,23 +121,58 @@ int holdPitch = 0;
 float const PI_F = 3.14159265F;
 
 
+/******************************************** LOOP Variables *****************************************/
+  int velocity = 0;
+  int pressureSum = 0;
+  int dirX_amnt = 0;
+  int dirY_amnt = 0;
+  int dirZ_amnt = 0;
+
 /************************************************************************************************************
  Setup Function for Wifi Connection and Module Initialization
 ************************************************************************************************************/
 void setup() 
 {
+
+
+char bong1[6] = {'10','D0','7A','17','3E','7C'};
+
+// 10:D0:7A:17:3E:7C 
+ 
+// print your MAC address:
+byte mac[6];
+WiFi.macAddress(mac);
+Serial.print("MAC address: ");
+Serial.print(mac[5], HEX);
+Serial.print(":");
+Serial.print(mac[4], HEX);
+Serial.print(":");
+Serial.print(mac[3], HEX);
+Serial.print(":");
+Serial.print(mac[2], HEX);
+Serial.print(":");
+Serial.print(mac[1], HEX);
+Serial.print(":");
+Serial.println(mac[0], HEX);
+
+ 
+ 
+
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
 
   /****************************************** Establish WiFi Connection *************************************/
+  
   WiFi.on();
   WiFi.setCredentials(ssid, password);
   WiFi.connect();
+  
   while (!WiFi.ready())
   {
     Serial.print("Connecting ... \n");
     delay(300);
   }
+  
   if (WiFi.ready())
   {
     Serial.println("Connection to host established! \n\n");
@@ -139,7 +189,13 @@ void setup()
   if (localIP[0] != 0)
   {
     Serial.println("IP Address obtained! \n\n");
+    deviceID = localIP[3];
   }
+
+
+  IP = String(deviceID);
+
+
 
 //  hostIpAddress = '192.168.1.187'; 
  // hostIpAddress = WiFi.gatewayIP();
@@ -167,14 +223,12 @@ void setup()
  ************************************************************************************************************/
 void loop() 
 {
-  
-  /******************************************** Temporal Variables *****************************************/
-  int velocity = 0;
-  int pressureSum = 0;
-  int dirX_amnt = 0;
-  int dirY_amnt = 0;
-  int dirZ_amnt = 0;
-                     
+
+
+  String msg = "/id/" + IP;
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(deviceID);
+                    
   /****************************************** Get Continous Velocity ***************************************/
   /************************************* and Excitation Button Directions **********************************/
   
@@ -184,10 +238,22 @@ void loop()
   int fsrPressure_2 = ads.readADC_SingleEnded(2);  
   int fsrPressure_3 = ads.readADC_SingleEnded(3);
 
-  bndl_1.add("/pad/1").add(fsrPressure_0);
-  bndl_1.add("/pad/2").add(fsrPressure_1);
-  bndl_1.add("/pad/3").add(fsrPressure_2);
-  bndl_1.add("/pad/4").add(fsrPressure_3);
+
+  msg = "/bong/" + IP + "/pad/1";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_0);
+
+  msg = "/bong/" + IP + "/pad/2";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_1);
+
+  msg = "/bong/" + IP + "/pad/3";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_2);
+  
+  msg = "/bong/" + IP + "/pad/4";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_3);
 
   
   /*
@@ -222,9 +288,10 @@ void loop()
   int currentPitch = 0;
   pressureSum = 0;
 
-int  fsrPressure_pos = analogRead(A3);
-
-  bndl_1.add("/valve/1").add(fsrPressure_pos);
+  int  fsrPressure_pos = analogRead(A3);
+  msg = "/bong/" + IP + "/valve/1";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_pos);
 
   
   if (fsrPressure_pos > NOTETHR)
@@ -235,7 +302,9 @@ int  fsrPressure_pos = analogRead(A3);
   }
 
   fsrPressure_pos = analogRead(A2);
-  bndl_1.add("/valve/2").add(fsrPressure_pos);
+   msg = "/bong/" + IP + "/valve/2";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_pos);
 
   if (fsrPressure_pos > NOTETHR)
   {
@@ -245,7 +314,10 @@ int  fsrPressure_pos = analogRead(A3);
   }
 
   fsrPressure_pos = analogRead(A1);
-  bndl_1.add("/valve/3").add(fsrPressure_pos);
+   msg = "/bong/" + IP + "/valve/3";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_pos);
+  
   if (fsrPressure_pos > NOTETHR)
   {
     currentPitch |= 0x0004;                                   // set third Bit to 1
@@ -254,7 +326,9 @@ int  fsrPressure_pos = analogRead(A3);
   }
 
   fsrPressure_pos = analogRead(A0);
-  bndl_1.add("/valve/4").add(fsrPressure_pos);
+   msg = "/bong/" + IP + "/valve/4";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(fsrPressure_pos);
 
   if (fsrPressure_pos > NOTETHR)
   {
@@ -339,8 +413,13 @@ int  fsrPressure_pos = analogRead(A3);
       currentOctave = 3;
     }
 
-     bndl_1.add("/ribbon/position").add(ribb_position);
-     bndl_1.add("/ribbon/pressure").add(ribb_pressure);
+ msg = "/bong/" + IP + "/ribbon/position";
+  msg.toCharArray(copy, 50);
+     bndl_1.add(copy).add(ribb_position);
+
+      msg = "/bong/" + IP + "/ribbon/pressure";
+  msg.toCharArray(copy, 50);
+     bndl_1.add(copy).add(ribb_pressure);
 
   } 
 
@@ -373,9 +452,14 @@ int  fsrPressure_pos = analogRead(A3);
   }
 
   float intensity = (float) pressureSum / 900;
-  
-  bndl_1.add("/note_pitch").add(notePitch);
-  bndl_1.add("/note_pressure").add(intensity);
+
+  msg = "/bong/" + IP + "/note";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(notePitch);
+
+  msg = "/bong/" + IP + "/intensity";
+  msg.toCharArray(copy, 50);
+  bndl_1.add(copy).add(intensity);
 
 
   /**************************************** Get Tilt Direction Amounts ************************************/

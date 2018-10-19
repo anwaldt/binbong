@@ -1,4 +1,4 @@
-#N canvas 1993 256 1920 974 10;
+#N canvas 0 106 1920 974 10;
 #X obj 107 46 BINBONG_receiver;
 #N canvas 1 106 450 300 SYNTH 0;
 #X floatatom 182 -104 5 0 0 0 - - -, f 5;
