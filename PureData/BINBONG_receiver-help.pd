@@ -1,5 +1,4 @@
 #N canvas 0 106 1920 974 10;
-#X obj 107 46 BINBONG_receiver;
 #N canvas 1 106 450 300 SYNTH 0;
 #X floatatom 182 -104 5 0 0 0 - - -, f 5;
 #X obj 231 -158 *;
@@ -86,4 +85,5 @@
 #X connect 40 0 38 1;
 #X connect 41 0 5 0;
 #X connect 42 0 40 0;
-#X restore 695 407 pd SYNTH;
+#X restore 926 685 pd SYNTH;
+#X obj 107 45 BINBONG_receiver 102;

@@ -1,14 +1,7 @@
 /*
- * Author: Henrik von Coler, Anton Schmied
+ * Authors: Henrik von Coler, Anton Schmied
  * 
-  This is the WiFi connection setup and comunnication
-  between the RedBear Duo and the A Wifi Dongle based
-  on the 'ConnectWithWPA' example last modified by
-  Jackson Lv (1 DEC 2015).
-
-  TODOs:
-  - Hidden network!?!?!?
-
+  
 */
 
 /*
@@ -66,7 +59,9 @@ UDP udpConnection;                       // UDP Instance
 const int LOCALPORT = 8888;              // port of the RedBEar DUO, which can receive the OSC Messages
 const int HOSTPORT  = 9999;              // port on the host, which the OSC messages will be sent to
 
-OSCBundle bndl_1;                  // OSC bundle for reading the piezos for octave selection
+OSCBundle fsr_bndl;                  // OSC bundle for reading the FSRs
+OSCBundle imu_bndl;                  // OSC bundle for reading the imu
+
 
 Adafruit_ADS1015 ads = Adafruit_ADS1015();    // create an instance for the ADC
 Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0();    // create an instance for the accelerometer
@@ -227,7 +222,7 @@ void loop()
 
   String msg = "/id/" + IP;
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(deviceID);
+  fsr_bndl.add(copy).add(deviceID);
                     
   /****************************************** Get Continous Velocity ***************************************/
   /************************************* and Excitation Button Directions **********************************/
@@ -241,19 +236,19 @@ void loop()
 
   msg = "/bong/" + IP + "/pad/1";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_0);
+  fsr_bndl.add(copy).add(fsrPressure_0);
 
   msg = "/bong/" + IP + "/pad/2";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_1);
+  fsr_bndl.add(copy).add(fsrPressure_1);
 
   msg = "/bong/" + IP + "/pad/3";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_2);
+  fsr_bndl.add(copy).add(fsrPressure_2);
   
   msg = "/bong/" + IP + "/pad/4";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_3);
+  fsr_bndl.add(copy).add(fsrPressure_3);
 
   
   /*
@@ -273,13 +268,13 @@ void loop()
   
   velocity = map(pressureSum, VELOCITYTHR, 975, 0, 127);
   velocity = constrain(velocity, 0, 127);
-  bndl_1.add("/velocity").add(velocity);
+  fsr_bndl.add("/velocity").add(velocity);
 
-  bndl_1.add("/dirX_push").add(dirX_amnt);
-  bndl_1.add("/dirY_push").add(dirY_amnt);
+  fsr_bndl.add("/dirX_push").add(dirX_amnt);
+  fsr_bndl.add("/dirY_push").add(dirY_amnt);
 
  
-   bndl_1.add("/dirX_push").add(dirX_amnt);
+   fsr_bndl.add("/dirX_push").add(dirX_amnt);
   
   */
   
@@ -291,7 +286,7 @@ void loop()
   int  fsrPressure_pos = analogRead(A3);
   msg = "/bong/" + IP + "/valve/1";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure_pos);
 
   
   if (fsrPressure_pos > NOTETHR)
@@ -304,7 +299,7 @@ void loop()
   fsrPressure_pos = analogRead(A2);
    msg = "/bong/" + IP + "/valve/2";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure_pos);
 
   if (fsrPressure_pos > NOTETHR)
   {
@@ -316,7 +311,7 @@ void loop()
   fsrPressure_pos = analogRead(A1);
    msg = "/bong/" + IP + "/valve/3";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure_pos);
   
   if (fsrPressure_pos > NOTETHR)
   {
@@ -328,7 +323,7 @@ void loop()
   fsrPressure_pos = analogRead(A0);
    msg = "/bong/" + IP + "/valve/4";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure_pos);
 
   if (fsrPressure_pos > NOTETHR)
   {
@@ -415,11 +410,11 @@ void loop()
 
  msg = "/bong/" + IP + "/ribbon/position";
   msg.toCharArray(copy, 50);
-     bndl_1.add(copy).add(ribb_position);
+     fsr_bndl.add(copy).add(ribb_position);
 
       msg = "/bong/" + IP + "/ribbon/pressure";
   msg.toCharArray(copy, 50);
-     bndl_1.add(copy).add(ribb_pressure);
+     fsr_bndl.add(copy).add(ribb_pressure);
 
   } 
 
@@ -455,11 +450,11 @@ void loop()
 
   msg = "/bong/" + IP + "/note";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(notePitch);
+  //fsr_bndl.add(copy).add(notePitch);
 
   msg = "/bong/" + IP + "/intensity";
   msg.toCharArray(copy, 50);
-  bndl_1.add(copy).add(intensity);
+  fsr_bndl.add(copy).add(intensity);
 
 
   /**************************************** Get Tilt Direction Amounts ************************************/
@@ -467,30 +462,68 @@ void loop()
 //
 //  // Use the simple AHRS function to get the current orientation.
 //  ahrs.getOrientation(&orientation);
-//  bndl_1.add("/roll").add(orientation.roll);
-//  bndl_1.add("/pitch").add(orientation.pitch);
-//  bndl_1.add("/heading").add(orientation.heading);
+//  fsr_bndl.add("/roll").add(orientation.roll);
+//  fsr_bndl.add("/pitch").add(orientation.pitch);
+//  fsr_bndl.add("/heading").add(orientation.heading);
 
   lsm.getEvent(&accel, &mag, &gyro, &temp);
-  float roll_x = (float)atan2(accel.acceleration.y, accel.acceleration.z);
-  float roll_y = (float)atan2(accel.acceleration.z, accel.acceleration.x);
   
-  bndl_1.add("/roll_x").add(roll_x * 180 / PI_F);
-  bndl_1.add("/roll_y").add(roll_y * 180 / PI_F);
+//  fsr_bndl.add("/roll_x").add(roll_x * 180 / PI_F);
+//  fsr_bndl.add("/roll_y").add(roll_y * 180 / PI_F);
+
+  msg = "/bong/" + IP + "/gyro/x";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(gyro.gyro.x);
+
+  msg = "/bong/" + IP + "/gyro/y";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(gyro.gyro.y);
   
-  bndl_1.add("/mag_x").add(mag.magnetic.x);
-  bndl_1.add("/mag_y").add(mag.magnetic.y);
-  bndl_1.add("/mag_z").add(mag.magnetic.z);
+  msg = "/bong/" + IP + "/gyro/z";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(gyro.gyro.z);
+  
+  msg = "/bong/" + IP + "/mag/x";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(mag.magnetic.x);
 
-  bndl_1.add("/accel_x").add(accel.acceleration.x);
-  bndl_1.add("/accel_y").add(accel.acceleration.y);
-  bndl_1.add("/accel_z").add(accel.acceleration.z);
+  msg = "/bong/" + IP + "/mag/y";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(mag.magnetic.y);
 
+  msg = "/bong/" + IP + "/mag/z";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(mag.magnetic.z);
+
+
+  msg = "/bong/" + IP + "/accel/x";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(accel.acceleration.x);
+
+  msg = "/bong/" + IP + "/accel/y";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(accel.acceleration.y);
+
+  msg = "/bong/" + IP + "/accel/z";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(accel.acceleration.z);
+
+
+  
   /************************************************ Send Bundle *******************************************/
+
   udpConnection.beginPacket(hostIpAddress, HOSTPORT);
-  bndl_1.send(udpConnection);
+  imu_bndl.send(udpConnection);
   udpConnection.endPacket();
-  bndl_1.empty();
+
+  udpConnection.beginPacket(hostIpAddress, HOSTPORT);
+  fsr_bndl.send(udpConnection);
+  udpConnection.endPacket();
+
+
+  
+  fsr_bndl.empty();
+  imu_bndl.empty();
 }
 
 
