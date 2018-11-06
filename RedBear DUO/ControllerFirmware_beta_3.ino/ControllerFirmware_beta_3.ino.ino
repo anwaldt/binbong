@@ -1,18 +1,8 @@
 /*
- * Authors: Henrik von Coler, Anton Schmied
- * 
   
-*/
-
-/*
-   SYSTEM_MODE:
-       - AUTOMATIC: Automatically try to connect to Wi-Fi and the Particle Cloud and handle the cloud messages.
-       - SEMI_AUTOMATIC: Manually connect to Wi-Fi and the Particle Cloud, but automatically handle the cloud messages.
-       - MANUAL: Manually connect to Wi-Fi and the Particle Cloud and handle the cloud messages.
-
-   SYSTEM_MODE(AUTOMATIC) does not need to be called, because it is the default state.
-   However the user can invoke this method to make the mode explicit.
-   Learn more about system modes: https://docs.particle.io/reference/firmware/photon/#system-modes .
+  Authors: Henrik von Coler, Anton Schmied
+  Date: 2018-11-05
+   
 */
 
 #if defined(ARDUINO)
@@ -24,11 +14,10 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
  ************************************************************************************************************/
 #include <cmath>
 #include "particle_osc.h"               // the particle header includes all OSC relevant headers and cpps
-
+#include <Adafruit_Sensor.h>
 #include <Adafruit_ADS1015.h>           // Analog-Digital-Converter ADS1015 on the I2C bus
 #include <Adafruit_LSM9DS0.h>           // Accelerometer (+ Gyro + Mag +Temp) LSM 9DS0
 #include <Adafruit_Simple_AHRS.h>       // IMU conversion Library to calculate roll//pitch//heading !!!includes <cmath>!!!
-//#include <Adafruit_Sensor.h>          // additional IMU Library - unused
 
 //#include "application.h"      
 
@@ -66,6 +55,8 @@ OSCBundle imu_bndl;                  // OSC bundle for reading the imu
 Adafruit_ADS1015 ads = Adafruit_ADS1015();    // create an instance for the ADC
 Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0();    // create an instance for the accelerometer
 Adafruit_Simple_AHRS ahrs(&lsm.getAccel(), &lsm.getMag());
+
+
 
 // Function to configure the sensors on the LSM9DS0 board.
 // You don't need to change anything here, but have the option to select different
@@ -466,6 +457,8 @@ void loop()
 //  fsr_bndl.add("/pitch").add(orientation.pitch);
 //  fsr_bndl.add("/heading").add(orientation.heading);
 
+ 
+  // get raw imu sensor data
   lsm.getEvent(&accel, &mag, &gyro, &temp);
   
 //  fsr_bndl.add("/roll_x").add(roll_x * 180 / PI_F);
@@ -508,6 +501,21 @@ void loop()
   msg.toCharArray(copy, 50);
   imu_bndl.add(copy).add(accel.acceleration.z);
 
+
+  sensors_vec_t orientation;
+  ahrs.getOrientation(&orientation);
+
+msg = "/bong/" + IP + "/orientation/roll";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(orientation.roll);
+
+  msg = "/bong/" + IP + "/orientation/pitch";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(orientation.pitch);
+
+msg = "/bong/" + IP + "/orientation/heading";
+  msg.toCharArray(copy, 50);
+  imu_bndl.add(copy).add(orientation.heading);
 
   
   /************************************************ Send Bundle *******************************************/
