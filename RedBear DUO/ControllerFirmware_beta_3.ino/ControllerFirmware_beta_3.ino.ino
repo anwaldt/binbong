@@ -445,7 +445,7 @@ void loop()
 
   msg = "/bong/" + IP + "/intensity";
   msg.toCharArray(copy, 50);
-  fsr_bndl.add(copy).add(intensity);
+  //fsr_bndl.add(copy).add(intensity);
 
 
   /**************************************** Get Tilt Direction Amounts ************************************/
