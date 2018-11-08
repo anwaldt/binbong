@@ -110,7 +110,7 @@ float const PI_F = 3.14159265F;
 /******************************************** LOOP Variables *****************************************/
 
   int velocity = 0;
-  int pressureSum = 0;
+  int pressureSum = 0;  //!< ACID
   int dirX_amnt = 0;
   int dirY_amnt = 0;
   int dirZ_amnt = 0;
