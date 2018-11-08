@@ -1,4 +1,4 @@
-#N canvas 1921 333 1918 974 10;
+#N canvas 1921 225 1918 974 10;
 #X obj 94 -199 udpreceive 9999;
 #X msg 94 -226 port 9999;
 #X floatatom 36 92 5 0 0 0 - - -, f 5;
@@ -14,26 +14,26 @@
 #X obj 67 11 routeOSC /pad/1 /pad/2 /pad/3 /pad/4;
 #X text 114 157 PAD;
 #X obj 116 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 6152 1;
+-1 -1 74 1;
 #X obj 152 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 5779 1;
+-1 -1 37 1;
 #X obj 188 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 6524 1;
+-1 -1 0 1;
 #X obj 223 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 6313 1;
+-1 -1 25 1;
 #X obj 554 197 vsl 15 128 4000 0 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 7439 1;
+-1 -1 2200 1;
 #X obj 593 80 routeOSC /ribbon/position /ribbon/pressure;
 #X obj 595 198 vsl 15 128 0 300 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 508 1;
+-1 -1 339 1;
 #X obj 351 192 vsl 15 128 0 4000 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 7760 1;
+-1 -1 0 1;
 #X obj 387 192 vsl 15 128 0 4000 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 10370 1;
+-1 -1 0 1;
 #X obj 423 192 vsl 15 128 0 4000 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 8131 1;
+-1 -1 0 1;
 #X obj 459 192 vsl 15 128 0 4000 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 6302 1;
+-1 -1 0 1;
 #X obj 306 11 routeOSC /valve/1 /valve/2 /valve/3 /valve/4;
 #X text 372 157 VALVES;
 #X floatatom 116 327 5 0 0 0 - - -, f 5;
@@ -45,32 +45,32 @@
 #X floatatom 423 328 5 0 0 0 - - -, f 5;
 #X floatatom 459 328 5 0 0 0 - - -, f 5;
 #X obj 184 498 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 7604 1;
+-1 -1 6542 1;
 #X obj 184 558 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 5997 1;
+-1 -1 5138 1;
 #X obj 94 -176 unpackOSC;
 #X obj -103 378 routeOSC /mag/x /mag/y /mag/z;
 #X obj 184 528 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 12383 1;
+-1 -1 12700 1;
 #X floatatom 363 498 5 0 0 0 - - -, f 5;
 #X floatatom 363 530 5 0 0 0 - - -, f 5;
 #X floatatom 363 562 5 0 0 0 - - -, f 5;
 #X obj 401 498 hsl 128 15 -10 10 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 2621 1;
+-1 -1 643 1;
 #X obj 401 558 hsl 128 15 -10 10 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 8443 1;
+-1 -1 6315 1;
 #X obj 401 528 hsl 128 15 -10 10 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 2107 1;
+-1 -1 3400 1;
 #X obj 319 411 routeOSC /accel/x /accel/y /accel/z;
 #X floatatom 586 498 5 0 0 0 - - -, f 5;
 #X floatatom 586 530 5 0 0 0 - - -, f 5;
 #X floatatom 586 562 5 0 0 0 - - -, f 5;
 #X obj 626 498 hsl 128 15 -100 100 0 0 empty empty empty -2 -8 0 10
--4032 -1 -1 5828 1;
+-4032 -1 -1 6358 1;
 #X obj 626 558 hsl 128 15 -100 100 0 0 empty empty empty -2 -8 0 10
--4032 -1 -1 5666 1;
+-4032 -1 -1 6109 1;
 #X obj 626 528 hsl 128 15 -100 100 0 0 empty empty empty -2 -8 0 10
--4032 -1 -1 7466 1;
+-4032 -1 -1 6414 1;
 #X obj 579 436 routeOSC /gyro/x /gyro/y /gyro/z;
 #X text 196 472 MAGNETIC;
 #X text 427 472 ACCEL;
@@ -96,11 +96,11 @@
 #X floatatom 719 252 5 0 0 0 - - -, f 5;
 #X floatatom 764 252 5 0 0 0 - - -, f 5;
 #X obj 669 275 vsl 15 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 4086 1;
+-4160 -1 -1 3223 1;
 #X obj 719 274 vsl 15 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 7686 1;
+-4160 -1 -1 8579 1;
 #X obj 764 276 vsl 15 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 1533 1;
+-4160 -1 -1 12379 1;
 #X text 711 215 AHRS;
 #X obj -75 650 outlet;
 #X obj -73 462 +;
@@ -112,7 +112,7 @@
 #X obj -296 4 routeOSC /intensity /note /note_pressure, f 47;
 #X obj -228 651 outlet;
 #X obj 70 650 outlet;
-#X obj -75 561 - 1900;
+#X obj -75 561 - 0;
 #X connect 0 0 37 0;
 #X connect 1 0 0 0;
 #X connect 3 0 88 0;

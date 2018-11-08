@@ -99,7 +99,7 @@ sensors_event_t accel, mag, gyro, temp;
 int currentOctave = 2;
 
 const int VELOCITYTHR = 400;
-const int NOTETHR = 3000;
+const int NOTETHR = 500;
 int noteCurrentMillis = 0;
 int noteDiffMillis = 0;
 int holdPitch = 0;
@@ -108,11 +108,20 @@ float const PI_F = 3.14159265F;
 
 
 /******************************************** LOOP Variables *****************************************/
+
   int velocity = 0;
   int pressureSum = 0;
   int dirX_amnt = 0;
   int dirY_amnt = 0;
   int dirZ_amnt = 0;
+
+
+
+/* for FSR offsets: */
+
+int valve_offset[4] = {0, 0, 0, 0};
+int pad_offset[4] = {0, 0, 0, 0};
+
 
 /************************************************************************************************************
  Setup Function for Wifi Connection and Module Initialization
@@ -200,6 +209,22 @@ Serial.println(mac[0], HEX);
   delay(2000);
   lsm.begin();
 //  configureLSM9DS0();
+
+  /**************************************** calibrate FSR **********************************/
+
+
+valve_offset[0] = analogRead(A3);
+valve_offset[1] = analogRead(A2);
+valve_offset[2] = analogRead(A1);
+valve_offset[3] = analogRead(A0);
+
+
+pad_offset[0]  = ads.readADC_SingleEnded(0);
+pad_offset[1]  = ads.readADC_SingleEnded(1);
+pad_offset[2]  = ads.readADC_SingleEnded(2);
+pad_offset[3]  = ads.readADC_SingleEnded(3);
+
+
 }
 
 
@@ -218,11 +243,11 @@ void loop()
   /****************************************** Get Continous Velocity ***************************************/
   /************************************* and Excitation Button Directions **********************************/
   
-  int fsrPressure_0 = ads.readADC_SingleEnded(0);
-  int fsrPressure_1 = ads.readADC_SingleEnded(1);
+  int fsrPressure_0 = ads.readADC_SingleEnded(0)-pad_offset[0];
+  int fsrPressure_1 = ads.readADC_SingleEnded(1)-pad_offset[1];
 
-  int fsrPressure_2 = ads.readADC_SingleEnded(2);  
-  int fsrPressure_3 = ads.readADC_SingleEnded(3);
+  int fsrPressure_2 = ads.readADC_SingleEnded(2)-pad_offset[2];  
+  int fsrPressure_3 = ads.readADC_SingleEnded(3)-pad_offset[3];
 
 
   msg = "/bong/" + IP + "/pad/1";
@@ -274,7 +299,7 @@ void loop()
   int currentPitch = 0;
   pressureSum = 0;
 
-  int  fsrPressure_pos = analogRead(A3);
+  int  fsrPressure_pos = analogRead(A3)-valve_offset[0];
   msg = "/bong/" + IP + "/valve/1";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure_pos);
@@ -287,7 +312,7 @@ void loop()
     fsrPressed++;
   }
 
-  fsrPressure_pos = analogRead(A2);
+  fsrPressure_pos = analogRead(A2)-valve_offset[1];
    msg = "/bong/" + IP + "/valve/2";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure_pos);
@@ -299,7 +324,7 @@ void loop()
     fsrPressed++;
   }
 
-  fsrPressure_pos = analogRead(A1);
+  fsrPressure_pos = analogRead(A1)-valve_offset[2];
    msg = "/bong/" + IP + "/valve/3";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure_pos);
@@ -311,7 +336,7 @@ void loop()
     fsrPressed++;
   }
 
-  fsrPressure_pos = analogRead(A0);
+  fsrPressure_pos = analogRead(A0)-valve_offset[3];
    msg = "/bong/" + IP + "/valve/4";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure_pos);
@@ -441,7 +466,7 @@ void loop()
 
   msg = "/bong/" + IP + "/note";
   msg.toCharArray(copy, 50);
-  //fsr_bndl.add(copy).add(notePitch);
+  fsr_bndl.add(copy).add(notePitch);
 
   msg = "/bong/" + IP + "/intensity";
   msg.toCharArray(copy, 50);
