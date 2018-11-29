@@ -99,7 +99,7 @@ sensors_event_t accel, mag, gyro, temp;
 int currentOctave = 2;
 
 const int VELOCITYTHR = 400;
-const int NOTETHR = 500;
+const int NOTETHR = 150;
 int noteCurrentMillis = 0;
 int noteDiffMillis = 0;
 int holdPitch = 0;
