@@ -12,6 +12,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /************************************************************************************************************
    libraries
  ************************************************************************************************************/
+ 
 #include <cmath>
 #include "particle_osc.h"               // the particle header includes all OSC relevant headers and cpps
 #include <Adafruit_Sensor.h>
@@ -21,15 +22,30 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 
 //#include "application.h"      
 
+/************************************************************************************************************
+   variables
+   
+ ************************************************************************************************************/
+int currentOctave = 2;
 
+const int VELOCITYTHR = 400;
+const float NOTETHR   = 0.1;
+const int valveMAX    = 4000;
+const int padMAX      = 1024;
+
+int noteCurrentMillis = 0;
+int noteDiffMillis    = 0;
+int holdPitch         = 0;
+
+float const PI_F = 3.14159265F;
 
 
 
 
 
 /************************************************************************************************************
-   global variables
- ************************************************************************************************************/
+   NETWORK STUFF
+************************************************************************************************************/
 
 
 // this will be the last octet of the IP address
@@ -52,10 +68,14 @@ OSCBundle fsr_bndl;                  // OSC bundle for reading the FSRs
 OSCBundle imu_bndl;                  // OSC bundle for reading the imu
 
 
+
+/************************************************************************************************************
+   SEMSOR STUFF
+************************************************************************************************************/
+
 Adafruit_ADS1015 ads = Adafruit_ADS1015();    // create an instance for the ADC
 Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0();    // create an instance for the accelerometer
 Adafruit_Simple_AHRS ahrs(&lsm.getAccel(), &lsm.getMag());
-
 
 
 // Function to configure the sensors on the LSM9DS0 board.
@@ -96,15 +116,6 @@ sensors_event_t accel, mag, gyro, temp;
 #define fslpSenseLine_ANAL   A6
 #define fslpBotR0_ANAL       A7
 
-int currentOctave = 2;
-
-const int VELOCITYTHR = 400;
-const float NOTETHR   = 0.1;
-int noteCurrentMillis = 0;
-int noteDiffMillis    = 0;
-int holdPitch         = 0;
-
-float const PI_F = 3.14159265F;
 
 
 /******************************************** LOOP Variables *****************************************/
@@ -236,17 +247,16 @@ void loop()
 
   String msg = "/id/" + IP;
   msg.toCharArray(copy, 50);
+  
   fsr_bndl.add(copy).add(deviceID);
                     
   /****************************************** Get Continous Velocity ***************************************/
   /************************************* and Excitation Button Directions **********************************/
   
-  int fsrPressure_0 = ads.readADC_SingleEnded(0)-pad_offset[0];
-  int fsrPressure_1 = ads.readADC_SingleEnded(1)-pad_offset[1];
-
-  int fsrPressure_2 = ads.readADC_SingleEnded(2)-pad_offset[2];  
-  int fsrPressure_3 = ads.readADC_SingleEnded(3)-pad_offset[3];
-
+  float fsrPressure_0 = (float) (ads.readADC_SingleEnded(0)-pad_offset[0]) / (float) (padMAX - pad_offset[0] );
+  float fsrPressure_1 = (float) (ads.readADC_SingleEnded(1)-pad_offset[1]) / (float) (padMAX - pad_offset[1] );
+  float fsrPressure_2 = (float) (ads.readADC_SingleEnded(2)-pad_offset[2]) / (float) (padMAX - pad_offset[2] );
+  float fsrPressure_3 = (float) (ads.readADC_SingleEnded(3)-pad_offset[3]) / (float) (padMAX - pad_offset[3] );
 
   msg = "/bong/" + IP + "/pad/1";
   msg.toCharArray(copy, 50);
@@ -296,7 +306,7 @@ void loop()
   int currentPitch  = 0;
   pressureSum       = 0;
 
-  float  fsrPressure = (float) (analogRead(A3) -valve_offset[0]) / (float) (4000 -valve_offset[0] );     
+  float  fsrPressure = (float) (analogRead(A3) -valve_offset[0]) / (float) (valveMAX -valve_offset[0] );     
   msg = "/bong/" + IP + "/valve/1";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure);
@@ -309,7 +319,7 @@ void loop()
     fsrPressed++;
   }
 
-     fsrPressure = (float) (analogRead(A2) -valve_offset[1]) / (float) (4000 -valve_offset[1] );     
+     fsrPressure = (float) (analogRead(A2) -valve_offset[1]) / (float) (valveMAX -valve_offset[1] );     
    msg = "/bong/" + IP + "/valve/2";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure);
@@ -321,7 +331,7 @@ void loop()
     fsrPressed++;
   }
 
-     fsrPressure = (float) (analogRead(A1) -valve_offset[2]) / (float) (4000 -valve_offset[2] );     
+     fsrPressure = (float) (analogRead(A1) -valve_offset[2]) / (float) (valveMAX -valve_offset[2] );     
    msg = "/bong/" + IP + "/valve/3";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure);
@@ -333,7 +343,7 @@ void loop()
     fsrPressed++;
   }
 
-     fsrPressure = (float) (analogRead(A0) -valve_offset[3]) / (float) (4000 -valve_offset[3] );     
+     fsrPressure = (float) (analogRead(A0) -valve_offset[3]) / (float) (valveMAX -valve_offset[3] );     
    msg = "/bong/" + IP + "/valve/4";
   msg.toCharArray(copy, 50);
   fsr_bndl.add(copy).add(fsrPressure);
