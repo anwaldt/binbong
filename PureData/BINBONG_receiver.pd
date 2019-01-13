@@ -1,4 +1,4 @@
-#N canvas 1921 225 1918 974 10;
+#N canvas 1921 105 1918 974 10;
 #X obj 94 -199 udpreceive 9999;
 #X msg 94 -226 port 9999;
 #X floatatom 36 92 5 0 0 0 - - -, f 5;
@@ -16,16 +16,16 @@
 #X obj 116 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
 -1 -1 0 1;
 #X obj 152 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 347 1;
+-1 -1 0 1;
 #X obj 188 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 769 1;
+-1 -1 0 1;
 #X obj 223 191 vsl 15 128 0 1024 0 0 empty empty empty 0 -9 0 10 -4034
 -1 -1 0 1;
 #X obj 554 197 vsl 15 128 4000 0 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 10481 1;
+-1 -1 0 1;
 #X obj 593 80 routeOSC /ribbon/position /ribbon/pressure;
 #X obj 595 198 vsl 15 128 0 300 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 212 1;
+-1 -1 0 1;
 #X obj 351 192 vsl 15 128 0 4000 0 0 empty empty empty 0 -9 0 10 -258113
 -1 -1 0 1;
 #X obj 387 192 vsl 15 128 0 4000 0 0 empty empty empty 0 -9 0 10 -258113
@@ -45,32 +45,32 @@
 #X floatatom 423 361 5 0 0 0 - - -, f 5;
 #X floatatom 459 361 5 0 0 0 - - -, f 5;
 #X obj 184 498 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 8088 1;
+-1 -1 0 1;
 #X obj 184 558 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 5302 1;
+-1 -1 0 1;
 #X obj 94 -176 unpackOSC;
 #X obj -103 378 routeOSC /mag/x /mag/y /mag/z;
 #X obj 184 528 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 11419 1;
+-1 -1 0 1;
 #X floatatom 363 498 5 0 0 0 - - -, f 5;
 #X floatatom 363 530 5 0 0 0 - - -, f 5;
 #X floatatom 363 562 5 0 0 0 - - -, f 5;
 #X obj 401 498 hsl 128 15 -10 10 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 631 1;
+-1 -1 0 1;
 #X obj 401 558 hsl 128 15 -10 10 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 6609 1;
+-1 -1 0 1;
 #X obj 401 528 hsl 128 15 -10 10 0 0 empty empty empty -2 -8 0 10 -4032
--1 -1 3570 1;
+-1 -1 0 1;
 #X obj 319 411 routeOSC /accel/x /accel/y /accel/z;
 #X floatatom 586 498 5 0 0 0 - - -, f 5;
 #X floatatom 586 530 5 0 0 0 - - -, f 5;
 #X floatatom 586 562 5 0 0 0 - - -, f 5;
 #X obj 626 498 hsl 128 15 -100 100 0 0 empty empty empty -2 -8 0 10
--4032 -1 -1 6349 1;
+-4032 -1 -1 0 1;
 #X obj 626 558 hsl 128 15 -100 100 0 0 empty empty empty -2 -8 0 10
--4032 -1 -1 6064 1;
+-4032 -1 -1 0 1;
 #X obj 626 528 hsl 128 15 -100 100 0 0 empty empty empty -2 -8 0 10
--4032 -1 -1 6442 1;
+-4032 -1 -1 0 1;
 #X obj 579 436 routeOSC /gyro/x /gyro/y /gyro/z;
 #X text 196 472 MAGNETIC;
 #X text 427 472 ACCEL;
@@ -96,11 +96,11 @@
 #X floatatom 719 252 5 0 0 0 - - -, f 5;
 #X floatatom 764 252 5 0 0 0 - - -, f 5;
 #X obj 669 275 vsl 15 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 3363 1;
+-4160 -1 -1 0 1;
 #X obj 719 274 vsl 15 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 8607 1;
+-4160 -1 -1 0 1;
 #X obj 764 276 vsl 15 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 12402 1;
+-4160 -1 -1 0 1;
 #X text 711 215 AHRS;
 #X obj -75 650 outlet;
 #X obj -73 462 +;
@@ -116,8 +116,10 @@
 #X obj 302 650 +;
 #X obj 302 673 +;
 #X obj 302 696 +;
-#X obj -113 147 + 10;
-#X floatatom -96 173 5 0 0 0 - - -, f 5;
+#X obj -149 137 + 5;
+#X obj 162 670 s MAG1;
+#X obj 280 109 bng 15 250 50 0 empty empty Receiving 17 7 0 10 -262144
+-1 -1;
 #X connect 0 0 37 0;
 #X connect 1 0 0 0;
 #X connect 3 0 94 0;
@@ -154,7 +156,9 @@
 #X connect 32 0 91 1;
 #X connect 33 0 92 1;
 #X connect 34 0 93 1;
+#X connect 35 0 95 0;
 #X connect 37 0 66 0;
+#X connect 37 0 96 0;
 #X connect 38 0 9 0;
 #X connect 38 1 10 0;
 #X connect 38 2 11 0;
@@ -197,5 +201,4 @@
 #X connect 91 0 92 0;
 #X connect 92 0 93 0;
 #X connect 94 0 88 0;
-#X connect 94 0 95 0;
 #X coords 0 -1 1 1 700 500 1 100 100;
