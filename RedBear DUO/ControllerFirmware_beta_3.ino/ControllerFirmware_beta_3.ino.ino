@@ -99,10 +99,10 @@ sensors_event_t accel, mag, gyro, temp;
 int currentOctave = 2;
 
 const int VELOCITYTHR = 400;
-const int NOTETHR = 200;
+const float NOTETHR   = 0.1;
 int noteCurrentMillis = 0;
-int noteDiffMillis = 0;
-int holdPitch = 0;
+int noteDiffMillis    = 0;
+int holdPitch         = 0;
 
 float const PI_F = 3.14159265F;
 
@@ -210,17 +210,17 @@ void setup()
 
   /**************************************** calibrate FSR **********************************/
 
-
-valve_offset[0] = analogRead(A3);
-valve_offset[1] = analogRead(A2);
-valve_offset[2] = analogRead(A1);
-valve_offset[3] = analogRead(A0);
-
-
-pad_offset[0]  = ads.readADC_SingleEnded(0);
-pad_offset[1]  = ads.readADC_SingleEnded(1);
-pad_offset[2]  = ads.readADC_SingleEnded(2);
-pad_offset[3]  = ads.readADC_SingleEnded(3);
+  
+  valve_offset[0] = analogRead(A3);
+  valve_offset[1] = analogRead(A2);
+  valve_offset[2] = analogRead(A1);
+  valve_offset[3] = analogRead(A0);
+  
+  
+  pad_offset[0]  = ads.readADC_SingleEnded(0);
+  pad_offset[1]  = ads.readADC_SingleEnded(1);
+  pad_offset[2]  = ads.readADC_SingleEnded(2);
+  pad_offset[3]  = ads.readADC_SingleEnded(3);
 
 
 }
@@ -286,63 +286,62 @@ void loop()
 
   fsr_bndl.add("/dirX_push").add(dirX_amnt);
   fsr_bndl.add("/dirY_push").add(dirY_amnt);
-
  
    fsr_bndl.add("/dirX_push").add(dirX_amnt);
   
   */
   
   /********************************************** Read Pitch Sensors ****************************************/
-  int fsrPressed = 0;
-  int currentPitch = 0;
-  pressureSum = 0;
+  int fsrPressed    = 0;
+  int currentPitch  = 0;
+  pressureSum       = 0;
 
-  int  fsrPressure_pos = analogRead(A3)-valve_offset[0];
+  float  fsrPressure = (float) (analogRead(A3) -valve_offset[0]) / (float) (4000 -valve_offset[0] );     
   msg = "/bong/" + IP + "/valve/1";
   msg.toCharArray(copy, 50);
-  fsr_bndl.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure);
 
   
-  if (fsrPressure_pos > NOTETHR)
+  if (fsrPressure > NOTETHR)
   {
     currentPitch |= 0x0001;                                   // set first Bit to 1
-    pressureSum += (fsrPressure_pos - NOTETHR);
+    pressureSum += (fsrPressure - NOTETHR);
     fsrPressed++;
   }
 
-  fsrPressure_pos = analogRead(A2)-valve_offset[1];
+     fsrPressure = (float) (analogRead(A2) -valve_offset[1]) / (float) (4000 -valve_offset[1] );     
    msg = "/bong/" + IP + "/valve/2";
   msg.toCharArray(copy, 50);
-  fsr_bndl.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure);
 
-  if (fsrPressure_pos > NOTETHR)
+  if (fsrPressure > NOTETHR)
   {
     currentPitch |= 0x0002;                                   // set second Bit to 1
-    pressureSum += (fsrPressure_pos - NOTETHR);
+    pressureSum += (fsrPressure - NOTETHR);
     fsrPressed++;
   }
 
-  fsrPressure_pos = analogRead(A1)-valve_offset[2];
+     fsrPressure = (float) (analogRead(A1) -valve_offset[2]) / (float) (4000 -valve_offset[2] );     
    msg = "/bong/" + IP + "/valve/3";
   msg.toCharArray(copy, 50);
-  fsr_bndl.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure);
   
-  if (fsrPressure_pos > NOTETHR)
+  if (fsrPressure > NOTETHR)
   {
     currentPitch |= 0x0004;                                   // set third Bit to 1
-    pressureSum += (fsrPressure_pos - NOTETHR);
+    pressureSum += (fsrPressure - NOTETHR);
     fsrPressed++;
   }
 
-  fsrPressure_pos = analogRead(A0)-valve_offset[3];
+     fsrPressure = (float) (analogRead(A0) -valve_offset[3]) / (float) (4000 -valve_offset[3] );     
    msg = "/bong/" + IP + "/valve/4";
   msg.toCharArray(copy, 50);
-  fsr_bndl.add(copy).add(fsrPressure_pos);
+  fsr_bndl.add(copy).add(fsrPressure);
 
-  if (fsrPressure_pos > NOTETHR)
+  if (fsrPressure > NOTETHR)
   {
     currentPitch |= 0x0008;                                   // set fourth Bit to 1
-    pressureSum += (fsrPressure_pos - NOTETHR);
+    pressureSum += (fsrPressure - NOTETHR);
     fsrPressed++;
   }
 
@@ -511,7 +510,6 @@ void loop()
   msg.toCharArray(copy, 50);
   imu_bndl.add(copy).add(mag.magnetic.z);
 
-
   msg = "/bong/" + IP + "/accel/x";
   msg.toCharArray(copy, 50);
   imu_bndl.add(copy).add(accel.acceleration.x);
@@ -550,7 +548,6 @@ msg = "/bong/" + IP + "/orientation/heading";
   udpConnection.beginPacket(hostIpAddress, HOSTPORT);
   fsr_bndl.send(udpConnection);
   udpConnection.endPacket();
-
 
   
   fsr_bndl.empty();
