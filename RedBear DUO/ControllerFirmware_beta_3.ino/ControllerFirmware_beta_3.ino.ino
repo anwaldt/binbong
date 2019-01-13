@@ -99,7 +99,7 @@ sensors_event_t accel, mag, gyro, temp;
 int currentOctave = 2;
 
 const int VELOCITYTHR = 400;
-const int NOTETHR = 150;
+const int NOTETHR = 200;
 int noteCurrentMillis = 0;
 int noteDiffMillis = 0;
 int holdPitch = 0;
@@ -109,52 +109,50 @@ float const PI_F = 3.14159265F;
 
 /******************************************** LOOP Variables *****************************************/
 
-  int velocity = 0;
+  int velocity    = 0;
   int pressureSum = 0;  //!< ACID
-  int dirX_amnt = 0;
-  int dirY_amnt = 0;
-  int dirZ_amnt = 0;
+  int dirX_amnt   = 0;
+  int dirY_amnt   = 0;
+  int dirZ_amnt   = 0;
 
 
 
 /* for FSR offsets: */
-
+/* set once before main loop 
+ *  
+ */
 int valve_offset[4] = {0, 0, 0, 0};
-int pad_offset[4] = {0, 0, 0, 0};
-
+int pad_offset[4]   = {0, 0, 0, 0};
 
 /************************************************************************************************************
  Setup Function for Wifi Connection and Module Initialization
 ************************************************************************************************************/
+
 void setup() 
 {
 
+  char bong1[6] = {'10','D0','7A','17','3E','7C'};
 
-char bong1[6] = {'10','D0','7A','17','3E','7C'};
-
-// 10:D0:7A:17:3E:7C 
- 
-// print your MAC address:
-byte mac[6];
-WiFi.macAddress(mac);
-Serial.print("MAC address: ");
-Serial.print(mac[5], HEX);
-Serial.print(":");
-Serial.print(mac[4], HEX);
-Serial.print(":");
-Serial.print(mac[3], HEX);
-Serial.print(":");
-Serial.print(mac[2], HEX);
-Serial.print(":");
-Serial.print(mac[1], HEX);
-Serial.print(":");
-Serial.println(mac[0], HEX);
-
- 
- 
-
-  //Initialize serial and wait for port to open:
-  Serial.begin(9600);
+  // 10:D0:7A:17:3E:7C 
+   
+  // print your MAC address:
+  byte mac[6];
+  WiFi.macAddress(mac);
+//  Serial.print("MAC address: ");
+//  Serial.print(mac[5], HEX);
+//  Serial.print(":");
+//  Serial.print(mac[4], HEX);
+//  Serial.print(":");
+//  Serial.print(mac[3], HEX);
+//  Serial.print(":");
+//  Serial.print(mac[2], HEX);
+//  Serial.print(":");
+//  Serial.print(mac[1], HEX);
+//  Serial.print(":");
+//  Serial.println(mac[0], HEX);
+// 
+//  //Initialize serial and wait for port to open:
+//  Serial.begin(9600);
 
   /****************************************** Establish WiFi Connection *************************************/
   
@@ -162,28 +160,28 @@ Serial.println(mac[0], HEX);
   WiFi.setCredentials(ssid, password);
   WiFi.connect();
   
-  while (!WiFi.ready())
-  {
-    Serial.print("Connecting ... \n");
-    delay(300);
-  }
+//  while (!WiFi.ready())
+//  {
+//    Serial.print("Connecting ... \n");
+//    delay(300);
+//  }
   
-  if (WiFi.ready())
-  {
-    Serial.println("Connection to host established! \n\n");
-  }
+//  if (WiFi.ready())
+//  {
+//    Serial.println("Connection to host established! \n\n");
+//  }
   
   // get IP Address
   IPAddress localIP = WiFi.localIP();
   while (localIP[0] == 0)
   {
     localIP = WiFi.localIP();
-    Serial.println("Waiting for an IP address ...");
+   // Serial.println("Waiting for an IP address ...");
     delay(1000);
   }
   if (localIP[0] != 0)
   {
-    Serial.println("IP Address obtained! \n\n");
+    // Serial.println("IP Address obtained! \n\n");
     deviceID = localIP[3];
   }
 
@@ -462,7 +460,7 @@ void loop()
     holdPitch = 0;
   }
 
-  float intensity = (float) pressureSum / 900;
+  float intensity = (float) pressureSum / 900.0;
 
   msg = "/bong/" + IP + "/note";
   msg.toCharArray(copy, 50);
