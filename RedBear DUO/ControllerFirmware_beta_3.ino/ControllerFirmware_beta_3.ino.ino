@@ -18,7 +18,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADS1015.h>           // Analog-Digital-Converter ADS1015 on the I2C bus
 #include <Adafruit_LSM9DS0.h>           // Accelerometer (+ Gyro + Mag +Temp) LSM 9DS0
-#include <Adafruit_Simple_AHRS.h>       // IMU conversion Library to calculate roll//pitch//heading !!!includes <cmath>!!!
+//#include <Adafruit_Simple_AHRS.h>       // IMU conversion Library to calculate roll//pitch//heading !!!includes <cmath>!!!
 
 //#include "application.h"      
 
@@ -70,12 +70,12 @@ OSCBundle imu_bndl;                  // OSC bundle for reading the imu
 
 
 /************************************************************************************************************
-   SEMSOR STUFF
+   SENSOR STUFF
 ************************************************************************************************************/
 
 Adafruit_ADS1015 ads = Adafruit_ADS1015();    // create an instance for the ADC
 Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0();    // create an instance for the accelerometer
-Adafruit_Simple_AHRS ahrs(&lsm.getAccel(), &lsm.getMag());
+ 
 
 
 // Function to configure the sensors on the LSM9DS0 board.
@@ -141,10 +141,7 @@ int pad_offset[4]   = {0, 0, 0, 0};
 
 void setup() 
 {
-
-  char bong1[6] = {'10','D0','7A','17','3E','7C'};
-
-  // 10:D0:7A:17:3E:7C 
+ 
    
   // print your MAC address:
   byte mac[6];
@@ -480,7 +477,7 @@ void loop()
   //fsr_bndl.add(copy).add(intensity);
 
 
-  /**************************************** Get Tilt Direction Amounts ************************************/
+  /**************************************** IMU RAW ************************************/
 //  sensors_vec_t orientation;
 //
 //  // Use the simple AHRS function to get the current orientation.
@@ -533,10 +530,62 @@ void loop()
   imu_bndl.add(copy).add(accel.acceleration.z);
 
 
-  sensors_vec_t orientation;
-  ahrs.getOrientation(&orientation);
+  /**************************************** Absolute Orientation ************************************/
+  // extracted from 'Adafruit_Simple_AHRS.cpp'
 
-msg = "/bong/" + IP + "/orientation/roll";
+
+  sensors_vec_t orientation;
+
+
+  // roll: Rotation around the X-axis. -180 <= roll <= 180                                          
+  // a positive roll angle is defined to be a clockwise rotation about the positive X-axis          
+  //                                                                                                
+  //                    y                                                                           
+  //      roll = atan2(---)                                                                         
+  //                    z                                                                           
+  //                                                                                                
+  // where:  y, z are returned value from accelerometer sensor    
+  orientation.roll = (float)atan2(accel.acceleration.y, accel.acceleration.z);
+
+
+  // pitch: Rotation around the Y-axis. -180 <= roll <= 180                                         
+  // a positive pitch angle is defined to be a clockwise rotation about the positive Y-axis         
+  //                                                                                                
+  //                                 -x                                                             
+  //      pitch = atan(-------------------------------)                                             
+  //                    y * sin(roll) + z * cos(roll)                                               
+  //                                                                                                
+  // where:  x, y, z are returned value from accelerometer sensor 
+  if (accel.acceleration.y * sin(orientation.roll) + accel.acceleration.z * cos(orientation.roll) == 0)
+    orientation.pitch = accel.acceleration.x > 0 ? (PI_F / 2) : (-PI_F / 2);
+  else
+    orientation.pitch = (float)atan(-accel.acceleration.x / (accel.acceleration.y * sin(orientation.roll) + \
+    accel.acceleration.z * cos(orientation.roll)));
+
+  // heading: Rotation around the Z-axis. -180 <= roll <= 180                                       
+  // a positive heading angle is defined to be a clockwise rotation about the positive Z-axis       
+  //                                                                                                
+  //                                       z * sin(roll) - y * cos(roll)                            
+  //   heading = atan2(--------------------------------------------------------------------------)  
+  //                    x * cos(pitch) + y * sin(pitch) * sin(roll) + z * sin(pitch) * cos(roll))   
+  //                                                                                                
+  // where:  x, y, z are returned value from magnetometer sensor 
+  orientation.heading = (float)atan2(mag.magnetic.z * sin(orientation.roll) - mag.magnetic.y * cos(orientation.roll), \
+                                      mag.magnetic.x * cos(orientation.pitch) + \
+                                      mag.magnetic.y * sin(orientation.pitch) * sin(orientation.roll) + \
+mag.magnetic.z * sin(orientation.pitch) * cos(orientation.roll));
+
+
+
+
+  // Convert angular data to degree 
+  orientation.roll = orientation.roll * 180 / PI_F;
+  orientation.pitch = orientation.pitch * 180 / PI_F;
+orientation.heading = orientation.heading * 180 / PI_F;
+
+
+
+  msg = "/bong/" + IP + "/orientation/roll";
   msg.toCharArray(copy, 50);
   imu_bndl.add(copy).add(orientation.roll);
 
@@ -544,9 +593,12 @@ msg = "/bong/" + IP + "/orientation/roll";
   msg.toCharArray(copy, 50);
   imu_bndl.add(copy).add(orientation.pitch);
 
-msg = "/bong/" + IP + "/orientation/heading";
+  msg = "/bong/" + IP + "/orientation/heading";
   msg.toCharArray(copy, 50);
   imu_bndl.add(copy).add(orientation.heading);
+
+
+  
 
   
   /************************************************ Send Bundle *******************************************/
