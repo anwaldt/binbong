@@ -478,20 +478,13 @@ void loop()
 
 
   /**************************************** IMU RAW ************************************/
-//  sensors_vec_t orientation;
-//
-//  // Use the simple AHRS function to get the current orientation.
-//  ahrs.getOrientation(&orientation);
-//  fsr_bndl.add("/roll").add(orientation.roll);
-//  fsr_bndl.add("/pitch").add(orientation.pitch);
-//  fsr_bndl.add("/heading").add(orientation.heading);
+ 
 
  
   // get raw imu sensor data
   lsm.getEvent(&accel, &mag, &gyro, &temp);
   
-//  fsr_bndl.add("/roll_x").add(roll_x * 180 / PI_F);
-//  fsr_bndl.add("/roll_y").add(roll_y * 180 / PI_F);
+ 
 
   msg = "/bong/" + IP + "/gyro/x";
   msg.toCharArray(copy, 50);
@@ -530,59 +523,8 @@ void loop()
   imu_bndl.add(copy).add(accel.acceleration.z);
 
 
-  /**************************************** Absolute Orientation ************************************/
-  // extracted from 'Adafruit_Simple_AHRS.cpp'
-
-
-  sensors_vec_t orientation;
-
-
-  // roll: Rotation around the X-axis. -180 <= roll <= 180                                          
-  // a positive roll angle is defined to be a clockwise rotation about the positive X-axis          
-  //                                                                                                
-  //                    y                                                                           
-  //      roll = atan2(---)                                                                         
-  //                    z                                                                           
-  //                                                                                                
-  // where:  y, z are returned value from accelerometer sensor    
-  orientation.roll = (float)atan2(accel.acceleration.y, accel.acceleration.z);
-
-
-  // pitch: Rotation around the Y-axis. -180 <= roll <= 180                                         
-  // a positive pitch angle is defined to be a clockwise rotation about the positive Y-axis         
-  //                                                                                                
-  //                                 -x                                                             
-  //      pitch = atan(-------------------------------)                                             
-  //                    y * sin(roll) + z * cos(roll)                                               
-  //                                                                                                
-  // where:  x, y, z are returned value from accelerometer sensor 
-  if (accel.acceleration.y * sin(orientation.roll) + accel.acceleration.z * cos(orientation.roll) == 0)
-    orientation.pitch = accel.acceleration.x > 0 ? (PI_F / 2) : (-PI_F / 2);
-  else
-    orientation.pitch = (float)atan(-accel.acceleration.x / (accel.acceleration.y * sin(orientation.roll) + \
-    accel.acceleration.z * cos(orientation.roll)));
-
-  // heading: Rotation around the Z-axis. -180 <= roll <= 180                                       
-  // a positive heading angle is defined to be a clockwise rotation about the positive Z-axis       
-  //                                                                                                
-  //                                       z * sin(roll) - y * cos(roll)                            
-  //   heading = atan2(--------------------------------------------------------------------------)  
-  //                    x * cos(pitch) + y * sin(pitch) * sin(roll) + z * sin(pitch) * cos(roll))   
-  //                                                                                                
-  // where:  x, y, z are returned value from magnetometer sensor 
-  orientation.heading = (float)atan2(mag.magnetic.z * sin(orientation.roll) - mag.magnetic.y * cos(orientation.roll), \
-                                      mag.magnetic.x * cos(orientation.pitch) + \
-                                      mag.magnetic.y * sin(orientation.pitch) * sin(orientation.roll) + \
-mag.magnetic.z * sin(orientation.pitch) * cos(orientation.roll));
-
-
-
-
-  // Convert angular data to degree 
-  orientation.roll = orientation.roll * 180 / PI_F;
-  orientation.pitch = orientation.pitch * 180 / PI_F;
-orientation.heading = orientation.heading * 180 / PI_F;
-
+  
+  sensors_vec_t orientation = absolute_orientation(accel, mag);
 
 
   msg = "/bong/" + IP + "/orientation/roll";
@@ -655,4 +597,60 @@ void printWiFiInfo()
 
   Serial.print("Sending to IP Address: ");              // print host IP address:
   Serial.println(hostIpAddress);
+}
+
+
+
+/**************************************** Absolute Orientation ************************************/
+  // extracted from 'Adafruit_Simple_AHRS.cpp'
+sensors_vec_t absolute_orientation(sensors_event_t accel, sensors_event_t magnetic) 
+{
+  sensors_vec_t orientation;
+
+
+  // roll: Rotation around the X-axis. -180 <= roll <= 180                                          
+  // a positive roll angle is defined to be a clockwise rotation about the positive X-axis          
+  //                                                                                                
+  //                    y                                                                           
+  //      roll = atan2(---)                                                                         
+  //                    z                                                                           
+  //                                                                                                
+  // where:  y, z are returned value from accelerometer sensor    
+  orientation.roll = (float)atan2(accel.acceleration.y, accel.acceleration.z);
+
+
+  // pitch: Rotation around the Y-axis. -180 <= roll <= 180                                         
+  // a positive pitch angle is defined to be a clockwise rotation about the positive Y-axis         
+  //                                                                                                
+  //                                 -x                                                             
+  //      pitch = atan(-------------------------------)                                             
+  //                    y * sin(roll) + z * cos(roll)                                               
+  //                                                                                                
+  // where:  x, y, z are returned value from accelerometer sensor 
+  if (accel.acceleration.y * sin(orientation.roll) + accel.acceleration.z * cos(orientation.roll) == 0)
+    orientation.pitch = accel.acceleration.x > 0 ? (PI_F / 2) : (-PI_F / 2);
+  else
+    orientation.pitch = (float)atan(-accel.acceleration.x / (accel.acceleration.y * sin(orientation.roll) + \
+    accel.acceleration.z * cos(orientation.roll)));
+
+  // heading: Rotation around the Z-axis. -180 <= roll <= 180                                       
+  // a positive heading angle is defined to be a clockwise rotation about the positive Z-axis       
+  //                                                                                                
+  //                                       z * sin(roll) - y * cos(roll)                            
+  //   heading = atan2(--------------------------------------------------------------------------)  
+  //                    x * cos(pitch) + y * sin(pitch) * sin(roll) + z * sin(pitch) * cos(roll))   
+  //                                                                                                
+  // where:  x, y, z are returned value from magnetometer sensor 
+  orientation.heading = (float)atan2(mag.magnetic.z * sin(orientation.roll) - mag.magnetic.y * cos(orientation.roll), \
+                                      mag.magnetic.x * cos(orientation.pitch) + \
+                                      mag.magnetic.y * sin(orientation.pitch) * sin(orientation.roll) + \
+mag.magnetic.z * sin(orientation.pitch) * cos(orientation.roll));
+
+
+
+
+  // Convert angular data to degree 
+  orientation.roll = orientation.roll * 180 / PI_F;
+  orientation.pitch = orientation.pitch * 180 / PI_F;
+orientation.heading = orientation.heading * 180 / PI_F;
 }
