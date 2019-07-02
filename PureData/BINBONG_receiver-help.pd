@@ -1,4 +1,4 @@
-#N canvas 2190 179 1117 975 10;
+#N canvas 2698 253 1117 975 10;
 #N canvas 1 106 450 300 SYNTH 0;
 #X floatatom 182 -104 5 0 0 0 - - -, f 5;
 #X obj 231 -158 *;
@@ -86,7 +86,7 @@
 #X connect 41 0 5 0;
 #X connect 42 0 40 0;
 #X restore 926 685 pd SYNTH;
-#X obj 107 45 BINBONG_receiver 102;
 #X text 105 15 First creation argument: IP-address of the desired device
 ;
 #X obj 350 724 GLOOO_sender;
+#X obj 107 45 BINBONG_receiver 105;

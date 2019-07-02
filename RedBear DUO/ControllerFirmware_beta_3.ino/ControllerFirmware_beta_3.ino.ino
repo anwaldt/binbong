@@ -14,7 +14,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
  ************************************************************************************************************/
  
 #include <cmath>
-#include "particle_osc.h"               // the particle header includes all OSC relevant headers and cpps
+#include <particle_osc.h>               // the particle header includes all OSC relevant headers and cpps
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADS1015.h>           // Analog-Digital-Converter ADS1015 on the I2C bus
 #include <Adafruit_LSM9DS0.h>           // Accelerometer (+ Gyro + Mag +Temp) LSM 9DS0
@@ -55,10 +55,10 @@ String IP;
 
 
 
-char ssid[]     = "BINBONG_NET";           // SSID of the network
-char password[] = "03396025";         // network password
+char ssid[]     = "Notlandung";           // SSID of the network
+char password[] = "BorisBlacher66";         // network password
 
-IPAddress hostIpAddress(10,10,10,100);                // IP Address of the host
+IPAddress hostIpAddress(10,11,1,32);                // IP Address of the host
 
 UDP udpConnection;                       // UDP Instance
 const int LOCALPORT = 8888;              // port of the RedBEar DUO, which can receive the OSC Messages
