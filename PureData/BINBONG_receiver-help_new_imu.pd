@@ -1,4 +1,4 @@
-#N canvas 2400 -110 960 1156 10;
+#N canvas 960 56 960 1024 10;
 #N canvas 1 106 450 300 SYNTH 0;
 #X floatatom 182 -104 5 0 0 0 - - -;
 #X obj 231 -158 *;
@@ -89,4 +89,4 @@
 #X text 105 15 First creation argument: IP-address of the desired device
 ;
 #X obj 353 598 GLOOO_sender;
-#X obj 107 45 BINBONG_receiver_new_IMU 115;
+#X obj 107 45 BINBONG_receiver_new_imu 2;
