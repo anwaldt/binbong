@@ -13,17 +13,16 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
    libraries
  ************************************************************************************************************/
 
-#include <cmath>
-#include <Wire.h>
-#include "application.h"
-#include "particle_osc.h" // the particle header includes all OSC relevant headers and cpps
-#include <Adafruit_Sensor.h>
+#include "cmath"
 #include <Adafruit_ADS1015.h> // Analog-Digital-Converter ADS1015 on the I2C bus
-//#include <Adafruit_Simple_AHRS.h>       // IMU conversion Library to calculate roll//pitch//heading !!!includes <cmath>!!!
+#include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h> // BN055 Absolute orientation board
+#include <Wire.h>
+#include <particle_osc.h> // the particle header includes all OSC relevant headers and cpps
+//#include <Adafruit_Simple_AHRS.h>       // IMU conversion Library to calculate roll//pitch//heading !!!includes <cmath>!!!
 #include <utility/imumaths.h>
 
-#define BNO055_SAMPLERATE_DELAY_MS (100)
+#define BNO055_SAMPLERATE_DELAY_MS (10)
 
 /************************************************************************************************************
    variables
@@ -51,10 +50,15 @@ int deviceID = 0;
 char copy[50];
 String IP;
 
-char ssid[] = "Wu-Tang LAN";        // SSID of the network
-char password[] = "efortheenglish"; // network password
+// char ssid[] = "Yrkkö's iPhone"; // SSID of the network
+// char password[] = "salasana";   // network password
 
-IPAddress hostIpAddress(192, 168, 2, 113); // IP Address of the host
+// IPAddress hostIpAddress(172, 20, 10, 13); // IP Address of the host
+
+char ssid[] = "Notlandung";         // SSID of the network
+char password[] = "BorisBlacher66"; // network password
+
+IPAddress hostIpAddress(10, 11, 1, 32); // IP Address of the host
 
 UDP udpConnection;          // UDP Instance
 const int LOCALPORT = 8888; // port of the RedBEar DUO, which can receive the OSC Messages
@@ -175,7 +179,7 @@ void setup()
 {
 
     /****************************************** Establish WiFi Connection *************************************/
-
+    Serial.begin(9600);
     WiFi.on();
     WiFi.setCredentials(ssid, password);
     WiFi.connect();
@@ -207,7 +211,8 @@ void setup()
 
     delay(2000);
     /* Initialise the sensor */
-    if (!bno.begin())
+    Adafruit_BNO055::adafruit_bno055_opmode_t opmode = Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_NDOF;
+    if (!bno.begin(opmode))
     {
         /* There was a problem detecting the BNO055 ... check your connections */
         Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
@@ -470,10 +475,34 @@ void loop()
     msg.toCharArray(copy, 50);
     //fsr_bndl.add(copy).add(intensity);
 
-    /**************************************** IMU RAW ************************************/
+    /* SEND CALIBRATION STATUS */
+    uint8_t system, gyro, accel, mag;
+    system = gyro = accel = mag = 0;
+    bno.getCalibration(&system, &gyro, &accel, &mag);
+
+    msg = "/bong/" + IP + "/cal/sys";
+    msg.toCharArray(copy, 50);
+    imu_bndl.add(copy).add((float)system);
+
+    msg = "/bong/" + IP + "/cal/gyro";
+    msg.toCharArray(copy, 50);
+    imu_bndl.add(copy).add((float)gyro);
+
+    msg = "/bong/" + IP + "/cal/accel";
+    msg.toCharArray(copy, 50);
+    imu_bndl.add(copy).add((float)accel);
+
+    msg = "/bong/" + IP + "/cal/mag";
+    msg.toCharArray(copy, 50);
+    imu_bndl.add(copy).add((float)mag);
+
+    /* Optional: Display calibration status */
+    //displayCalStatus();
+
+    /* Optional: Display sensor status (debug only) */
+    //displaySensorStatus();
 
     // get IMU data
-
     sensors_event_t event = absolute_orientation();
 
     msg = "/bong/" + IP + "/orientation/roll";
@@ -554,15 +583,6 @@ sensors_event_t absolute_orientation()
     Serial.print(event.orientation.y, 4);
     Serial.print("\tZ: ");
     Serial.print(event.orientation.z, 4);
-
-    /* Optional: Display calibration status */
-    displayCalStatus();
-
-    /* Optional: Display sensor status (debug only) */
-    //displaySensorStatus();
-
-    /* New line for the next sample */
-    Serial.println("");
 
     /* Wait the specified delay before requesting nex data */
     delay(BNO055_SAMPLERATE_DELAY_MS);
