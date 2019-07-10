@@ -1,5 +1,4 @@
 /* Capacitive Sensors -> new! */
-#include <Wire.h>
 
 #define fslpDriveLine1_DIG D12
 #define fslpDriveLine2_DIG D13

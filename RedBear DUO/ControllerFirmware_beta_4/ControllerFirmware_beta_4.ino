@@ -60,6 +60,7 @@ void loop()
   // Prepare all data
   prepare_ribbon_data();
   prepare_valve_data();
+  prepare_pad_data();
   prepare_imu_data();
 
   // Send data
