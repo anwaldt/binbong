@@ -1,11 +1,11 @@
 
 const int valveMAX = 4000;
 
-int pressureSum = 0; //!< ACID
-int valve_offset[4] = {0, 0, 0, 0};
+int pressureSum       = 0; //!< ACID
+int valve_offset[4]   = {0, 0, 0, 0};
 int noteCurrentMillis = 0;
-int noteDiffMillis = 0;
-int holdPitch = 0;
+int noteDiffMillis    = 0;
+int holdPitch         = 0;
 
 void calibrate_valves()
 {
@@ -18,9 +18,9 @@ void calibrate_valves()
 void prepare_valve_data()
 {
     /********************************************** Read Pitch Sensors ****************************************/
-    int fsrPressed = 0;
-    int currentPitch = 0;
-    pressureSum = 0;
+    int fsrPressed    = 0;
+    int currentPitch  = 0;
+    pressureSum       = 0;
 
     float fsrPressure = (float)(analogRead(A3) - valve_offset[0]) / (float)(valveMAX - valve_offset[0]);
     msg = "/bong/" + IP + "/valve/1";
@@ -29,7 +29,8 @@ void prepare_valve_data()
 
     if (fsrPressure > NOTETHR)
     {
-        currentPitch |= 0x0001; // set first Bit to 1
+        // currentPitch |= 0x0001; // set first Bit to 1
+        currentPitch += 1;
         pressureSum += (fsrPressure - NOTETHR);
         fsrPressed++;
     }
@@ -41,7 +42,8 @@ void prepare_valve_data()
 
     if (fsrPressure > NOTETHR)
     {
-        currentPitch |= 0x0002; // set second Bit to 1
+        // currentPitch |= 0x0002; // set second Bit to 1
+        currentPitch += 2;
         pressureSum += (fsrPressure - NOTETHR);
         fsrPressed++;
     }
@@ -53,7 +55,8 @@ void prepare_valve_data()
 
     if (fsrPressure > NOTETHR)
     {
-        currentPitch |= 0x0004; // set third Bit to 1
+        // currentPitch |= 0x0004; // set third Bit to 1
+        currentPitch += 4;
         pressureSum += (fsrPressure - NOTETHR);
         fsrPressed++;
     }
@@ -65,7 +68,8 @@ void prepare_valve_data()
 
     if (fsrPressure > NOTETHR)
     {
-        currentPitch |= 0x0008; // set fourth Bit to 1
+        // currentPitch |= 0x0008; // set fourth Bit to 1    
+        currentPitch += 8;
         pressureSum += (fsrPressure - NOTETHR);
         fsrPressed++;
     }
@@ -88,7 +92,7 @@ void prepare_valve_data()
 
         if (noteDiffMillis > 5)
         {
-            notePitch = (holdPitch + 12 * currentOctave + 35);
+            notePitch = (holdPitch);
             //Serial.print("notepitch: ");
             //Serial.println(notePitch);
         }
