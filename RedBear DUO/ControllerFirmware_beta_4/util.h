@@ -25,13 +25,15 @@ UDP udpConnection;  // UDP Instance
 
 // char ssid[] = "Yrkkö's iPhone"; // SSID of the network
 // char password[] = "salasana";   // network password
-
 // IPAddress hostIpAddress(172, 20, 10, 13); // IP Address of the host
 
-char ssid[] = "Notlandung";         // SSID of the network
-char password[] = "BorisBlacher66"; // network password
+// char ssid[] = "Notlandung";         // SSID of the network
+// char password[] = "BorisBlacher66"; // network password
+// IPAddress hostIpAddress(10, 11, 1, 200); // IP Address of the host
 
-IPAddress hostIpAddress(10, 11, 1, 200); // IP Address of the host
+char ssid[] = "BINBONG_NET";         // SSID of the network
+char password[] = "03396025"; // network password
+IPAddress hostIpAddress(10, 10, 10, 100); // IP Address of the host
 
 /************************************************************************************************************
    Once the RedBear Duo is successfully connected to the WiFi Host
