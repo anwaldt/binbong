@@ -1,6 +1,6 @@
 #include <Adafruit_BNO055.h> // BN055 Absolute orientation board
 
-#define BNO055_SAMPLERATE_DELAY_MS (10)
+#define BNO055_SAMPLERATE_DELAY_MS 10
 Adafruit_BNO055 bno = Adafruit_BNO055(55); // create an instance for the accelerometer
 
 /**************************************** Absolute Orientation ************************************/
@@ -10,15 +10,14 @@ sensors_event_t absolute_orientation()
     bno.getEvent(&event);
 
     /* Display the floating point data */
-    Serial.print("X: ");
-    Serial.print(event.orientation.x, 4);
-    Serial.print("\tY: ");
-    Serial.print(event.orientation.y, 4);
-    Serial.print("\tZ: ");
-    Serial.print(event.orientation.z, 4);
+    // Serial.print("X: ");
+    // Serial.print(event.orientation.x, 4);
+    // Serial.print("\tY: ");
+    // Serial.print(event.orientation.y, 4);
+    // Serial.print("\tZ: ");
+    // Serial.print(event.orientation.z, 4);
+    // Serial.print("\n");
 
-    /* Wait the specified delay before requesting nex data */
-    delay(BNO055_SAMPLERATE_DELAY_MS);
     return event;
 }
 
@@ -63,7 +62,7 @@ void displaySensorStatus(void)
     Serial.print("System Error:  0x");
     Serial.println(system_error, HEX);
     Serial.println("");
-    delay(500);
+    delay(100);
 }
 
 void displayCalStatus(void)
@@ -91,6 +90,7 @@ void displayCalStatus(void)
     Serial.print(accel, DEC);
     Serial.print(" M:");
     Serial.print(mag, DEC);
+    Serial.print("\n");
 }
 
 void prepare_imu_data()
@@ -123,6 +123,9 @@ void prepare_imu_data()
     //displaySensorStatus();
 
     // get IMU data
+
+    /* Wait the specified delay before requesting nex data */
+    delay(BNO055_SAMPLERATE_DELAY_MS);
     sensors_event_t event = absolute_orientation();
 
     msg = "/bong/" + IP + "/orientation/roll";

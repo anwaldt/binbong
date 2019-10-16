@@ -33,7 +33,7 @@ UDP udpConnection;  // UDP Instance
 
 char ssid[] = "BINBONG_NET";         // SSID of the network
 char password[] = "03396025"; // network password
-IPAddress hostIpAddress(10, 10, 10, 100); // IP Address of the host
+IPAddress hostIpAddress(192, 168, 0, 105); // IP Address of the host
 
 /************************************************************************************************************
    Once the RedBear Duo is successfully connected to the WiFi Host
