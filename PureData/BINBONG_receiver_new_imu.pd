@@ -11,18 +11,18 @@
 #X obj 67 11 routeOSC /pad/1 /pad/2 /pad/3 /pad/4;
 #X text 167 161 PAD;
 #X obj 116 191 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 0 1;
+-1 -1 491 1;
 #X obj 152 191 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 0 1;
+-1 -1 986 1;
 #X obj 188 191 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 0 1;
+-1 -1 246 1;
 #X obj 223 191 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -4034
--1 -1 0 1;
+-1 -1 176 1;
 #X obj 508 193 vsl 22 128 4000 0 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 0 1;
+-1 -1 7503 1;
 #X obj 593 80 routeOSC /ribbon/position /ribbon/pressure;
 #X obj 545 193 vsl 22 128 0 300 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 0 1;
+-1 -1 127 1;
 #X obj 310 192 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -258113
 -1 -1 0 1;
 #X obj 346 192 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -258113
@@ -30,7 +30,7 @@
 #X obj 382 192 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -258113
 -1 -1 0 1;
 #X obj 418 192 vsl 22 128 0 1 0 0 empty empty empty 0 -9 0 10 -258113
--1 -1 0 1;
+-1 -1 79 1;
 #X obj 306 11 routeOSC /valve/1 /valve/2 /valve/3 /valve/4;
 #X text 353 164 VALVES;
 #X floatatom 114 375 5 0 0 0 - - -, f 5;
@@ -54,11 +54,11 @@
 #X floatatom 705 209 5 0 0 0 - - -, f 5;
 #X floatatom 750 209 5 0 0 0 - - -, f 5;
 #X obj 655 232 vsl 22 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 0 1;
+-4160 -1 -1 6262 1;
 #X obj 705 231 vsl 22 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 0 1;
+-4160 -1 -1 6328 1;
 #X obj 750 233 vsl 22 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 0 1;
+-4160 -1 -1 12574 1;
 #X text 697 172 AHRS;
 #X obj -73 462 +;
 #X obj -73 485 +;
@@ -190,7 +190,7 @@
 #X obj 727 709 min 4;
 #X obj 727 686 max 0.01;
 #X obj 335 -174 list prepend;
-#X obj 439 129 tgl 22 0 empty empty empty 17 7 0 10 -159808 -1 -1 0
+#X obj 439 129 tgl 22 0 empty empty empty 17 7 0 10 -159808 -1 -1 1
 1;
 #X obj 340 -146 route 1;
 #X text 395 105 send control data;
@@ -200,7 +200,7 @@
 #X obj 635 728 list prepend 2;
 #X obj 635 682 / 180;
 #X obj 488 382 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -261682
--1 -1 2;
+-1 -1 0;
 #X text 509 378 none;
 #X text 509 393 valves;
 #X text 511 411 IMU;
@@ -215,7 +215,7 @@
 #X obj 572 -241 counter;
 #X obj 567 -283 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 567 -113 5 0 0 0 - - -, f 5;
+#X floatatom 582 124 5 0 0 0 - - -, f 5;
 #X obj 657 -299 metro 1000;
 #X obj 686 -343 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
 1 1;
@@ -225,6 +225,7 @@
 #X obj 651 -270 t b b b;
 #X obj 821 -353 loadbang;
 #X msg 825 -311 1;
+#X text 554 140 pcts / sec;
 #X connect 0 0 32 0;
 #X connect 0 0 186 0;
 #X connect 1 0 0 0;
