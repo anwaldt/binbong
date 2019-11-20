@@ -7,7 +7,6 @@ const float NOTETHR = 0.1;
 const int LOCALPORT = 8888; // port of the RedBEar DUO, which can receive the OSC Messages
 const int HOSTPORT = 9999;  // port on the host, which the OSC messages will be sent to
 
-int currentOctave = 2;
 int deviceID = 0;
 char copy[50];
 String IP;

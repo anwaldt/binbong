@@ -11,12 +11,13 @@ This repository contains all the necessary files to develop the firmaware for th
   
 - **Install through board manager**
   - [Redbear DUO Board package](https://github.com/redbear/Duo/blob/master/docs/arduino_board_package_installation_guide.md) 
-    - Important! select version 0.3.1 when installing
+    - **Important!** select version **0.3.1** when installing!
 
 - **Install through library manager**
-  -  Adafruit BNO055 library
-  -  Adafruit unified sensor library
-  -  Adafruit ADS1015 AD conversion library
+  -  Adafruit BNO055 library **1.1.9**
+  -  Adafruit unified sensor library **1.0.3**
+  -  Adafruit ADS1015 AD conversion library **1.0.0**
+  -  AgileWare CircularBuffer **1.3.1**
 
 - **Install manually**
   - Particle_osc (included in repo)

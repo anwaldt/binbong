@@ -1,4 +1,5 @@
 /* Capacitive Sensors -> new! */
+#include <CircularBuffer.h>
 
 #define fslpDriveLine1_DIG D12
 #define fslpDriveLine2_DIG D13
@@ -8,6 +9,16 @@
 #define fslpDriveLine2_ANAL A5
 #define fslpSenseLine_ANAL A6
 #define fslpBotR0_ANAL A7
+#define DELTA_LIMIT 300       // Amount of movement required to be added into the buffer
+#define OCTAVE_THRESHOLD 1500 // Amount of total movement within sampling period to change octave
+#define COOLDOWN_TIME 500     // Time in ms until octave can be changed again
+#define MAX_OCTAVE 5          // Maximum + or - octave shift from zero
+
+int currentOctave = 0;
+int currentDirection = 0;
+int previousPos = 0;
+unsigned long lastSet = millis();
+CircularBuffer<int, 10> buffer;
 
 void prepare_ribbon_data()
 {
@@ -35,9 +46,10 @@ void prepare_ribbon_data()
     {
         ribb_pressure = 32 * v2 / (v1 - v2);
     }
+    int ribbonPosition = 0;
+    int deltaRibbon = 0;
 
     /*** Read Pressure from FSLP Strip ***/
-    int ribb_position = 0;
     if (ribb_pressure > 0)
     {
         // Step 1 - Clear the charge on the sensor.
@@ -62,28 +74,57 @@ void prepare_ribbon_data()
         // Step 3 - Wait for the voltage to stabilize 5 - 10 microseconds.
         delayMicroseconds(10);
 
-        ribb_position = analogRead(fslpSenseLine_ANAL);
-
-        /* 3 Octave Solution, so three sectors on the Ribbon*/
-        if (ribb_position < 1365)
+        ribbonPosition = analogRead(fslpSenseLine_ANAL);
+        if (previousPos != 0) // Don't read the first sample after a finger is first placed on the ribbon to avoid value jumps
         {
-            currentOctave = 1;
+            deltaRibbon = abs(previousPos) - abs(ribbonPosition);
+            if (abs(deltaRibbon) > DELTA_LIMIT)
+            {
+                buffer.push(previousPos - ribbonPosition);
+                for (int i = 0; i < buffer.size(); i++)
+                {
+                    currentDirection += buffer[i]; // Sum the movement vectors
+                }
+                if (currentDirection > OCTAVE_THRESHOLD && millis() - lastSet >= COOLDOWN_TIME && currentOctave < MAX_OCTAVE)
+                {
+                    currentOctave++;
+                    currentDirection = 0;
+                    previousPos = 0;
+                    buffer.clear();
+                    lastSet = millis();
+                }
+                else if (currentDirection < -OCTAVE_THRESHOLD && millis() - lastSet >= COOLDOWN_TIME && -currentOctave < MAX_OCTAVE)
+                {
+                    currentOctave--;
+                    previousPos = 0;
+                    currentDirection = 0;
+                    buffer.clear();
+                    lastSet = millis();
+                }
+            }
+            else if (buffer.size() > 0)
+            {
+                buffer.shift(); // Dump oldest values from buffer once per cycle if they are not used eg. finger is not moving.
+            }
+            //Serial.printf("buf_siz:%d, pre_pos:%d, rib_pos:%d, del_rib:%d, cur_dir:%d\n", buffer.size(), previousPos, ribbonPosition, deltaRibbon, currentDirection);
         }
-        else if (ribb_position > 1365 && ribb_position < 2730)
-        {
-            currentOctave = 2;
-        }
-        else if (ribb_position > 2730)
-        {
-            currentOctave = 3;
-        }
+        previousPos = ribbonPosition;
+        msg = "/bong/" + IP + "/ribbon/octave";
+        msg.toCharArray(copy, 50);
+        fsr_bndl.add(copy).add(currentOctave);
 
         msg = "/bong/" + IP + "/ribbon/position";
         msg.toCharArray(copy, 50);
-        fsr_bndl.add(copy).add(ribb_position);
+        fsr_bndl.add(copy).add(ribbonPosition);
 
         msg = "/bong/" + IP + "/ribbon/pressure";
         msg.toCharArray(copy, 50);
         fsr_bndl.add(copy).add(ribb_pressure);
+    }
+    else
+    {
+        previousPos = 0;
+        currentDirection = 0;
+        buffer.clear();
     }
 }
