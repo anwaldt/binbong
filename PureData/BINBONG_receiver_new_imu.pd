@@ -1,4 +1,4 @@
-#N canvas 2560 58 2560 1382 10;
+#N canvas 2560 58 1920 1022 10;
 #X obj 108 -294 udpreceive 9999;
 #X msg 108 -321 port 9999;
 #X floatatom -235 90 5 0 0 0 - - -, f 5;
@@ -10,17 +10,17 @@
 #X obj 67 11 routeOSC /pad/1 /pad/2 /pad/3 /pad/4;
 #X text 167 161 PAD;
 #X obj 116 191 vsl 22 128 0 1 0 0 \$0-pad_1 empty empty 0 -9 0 10 -4034
--1 -1 186 1;
+-1 -1 0 1;
 #X obj 152 191 vsl 22 128 0 1 0 0 \$0-pad_2 empty empty 0 -9 0 10 -4034
--1 -1 427 1;
+-1 -1 0 1;
 #X obj 188 191 vsl 22 128 0 1 0 0 \$0-pad_3 empty empty 0 -9 0 10 -4034
--1 -1 847 1;
+-1 -1 0 1;
 #X obj 223 191 vsl 22 128 0 1 0 0 \$0-pad_4 empty empty 0 -9 0 10 -4034
--1 -1 404 1;
+-1 -1 0 1;
 #X obj 508 193 vsl 22 128 4000 0 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 10728 1;
+-1 -1 0 1;
 #X obj 545 193 vsl 22 128 0 300 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 42 1;
+-1 -1 0 1;
 #X obj 306 11 routeOSC /valve/1 /valve/2 /valve/3 /valve/4;
 #X text 353 164 VALVES;
 #X obj 111 -243 unpackOSC;
@@ -32,11 +32,11 @@
 #X floatatom 705 209 5 0 0 0 - - -, f 5;
 #X floatatom 750 209 5 0 0 0 - - -, f 5;
 #X obj 655 232 vsl 22 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 6182 1;
+-4160 -1 -1 0 1;
 #X obj 705 231 vsl 22 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 6337 1;
+-4160 -1 -1 0 1;
 #X obj 750 233 vsl 22 128 -180 180 0 0 empty empty empty 0 -9 0 10
--4160 -1 -1 6817 1;
+-4160 -1 -1 0 1;
 #X text 697 172 AHRS;
 #X obj -143 -54 routeOSC /intensity /note /note_pressure, f 47;
 #X obj 249 117 bng 15 250 50 0 empty empty Receiving 17 7 0 10 -262144
@@ -81,7 +81,7 @@
 #X obj 280 48 routeOSC /ribbon/position /ribbon/pressure /ribbon/octave
 ;
 #X obj 588 193 vsl 22 128 -5 5 0 0 empty empty empty 0 -9 0 10 -257985
--1 -1 6350 1;
+-1 -1 0 1;
 #X obj -274 307 r \$0-pad_1;
 #X obj -200 307 r \$0-pad_2;
 #X obj -131 308 r \$0-pad_3;
@@ -122,13 +122,13 @@
 #X obj -60 -14 select 0;
 #X obj -62 34 + 55;
 #X obj 310 192 vsl 22 128 0 1 0 0 \$0-valve_1 empty empty 0 -9 0 10
--258113 -1 -1 262 1;
+-258113 -1 -1 0 1;
 #X obj 346 192 vsl 22 128 0 1 0 0 \$0-valve_2 empty empty 0 -9 0 10
--258113 -1 -1 731 1;
+-258113 -1 -1 0 1;
 #X obj 382 192 vsl 22 128 0 1 0 0 \$0-valve_3 empty empty 0 -9 0 10
--258113 -1 -1 497 1;
+-258113 -1 -1 0 1;
 #X obj 418 192 vsl 22 128 0 1 0 0 \$0-valve_4 empty empty 0 -9 0 10
--258113 -1 -1 673 1;
+-258113 -1 -1 0 1;
 #X floatatom -62 1248 5 0 0 0 - - -, f 5;
 #X floatatom 14 1265 5 0 0 0 - - -, f 5;
 #X floatatom 99 1313 5 0 0 0 - - -, f 5;
@@ -172,6 +172,14 @@
 #X obj -68 -222 s BONG_COMPLETE;
 #X obj 303 -303 inlet;
 #X obj 303 -280 unpackOSC;
+#X obj 557 1204 r \$0-valve_1;
+#X obj 656 1204 r \$0-valve_2;
+#X obj 756 1203 r \$0-valve_3;
+#X obj 858 1203 r \$0-valve_4;
+#X obj 557 1227 s bong_VALVE_1;
+#X obj 656 1227 s bong_VALVE_2;
+#X obj 756 1226 s bong_VALVE_3;
+#X obj 858 1226 s bong_VALVE_4;
 #X connect 0 0 18 0;
 #X connect 0 0 53 0;
 #X connect 0 0 149 0;
@@ -306,4 +314,8 @@
 #X connect 148 0 80 0;
 #X connect 150 0 151 0;
 #X connect 151 0 19 0;
+#X connect 152 0 156 0;
+#X connect 153 0 157 0;
+#X connect 154 0 158 0;
+#X connect 155 0 159 0;
 #X coords 0 -1 1 1 700 350 1 100 100;
